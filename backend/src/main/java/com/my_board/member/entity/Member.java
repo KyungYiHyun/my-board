@@ -1,7 +1,6 @@
 package com.my_board.member.entity;
 
-import com.my_board.common.BaseEntity;
-import com.my_board.member.dto.request.MemberLoginRequest;
+import com.my_board.common.entity.BaseEntity;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +25,10 @@ public class Member extends BaseEntity {
     private String nickname;
 
     private String role;
+
+    public boolean isPasswordMatch(String rawPassword) {
+        return this.password.equals(rawPassword);
+    }
 
     @Builder
     public Member(String loginId, String memberName, String password, LocalDate birth, String nickname, String role) {

@@ -1,14 +1,18 @@
 package com.my_board.member.service;
 
+import com.my_board.common.exception.BusinessException;
 import com.my_board.member.dto.request.MemberLoginRequest;
 import com.my_board.member.dto.request.MemberSignupRequest;
+import com.my_board.member.dto.response.MemberLoginResponse;
 import com.my_board.member.entity.Member;
 import com.my_board.member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+
+
+import static com.my_board.common.dto.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -19,21 +23,24 @@ public class MemberService {
 
 
     public Member findByLoginId(MemberLoginRequest request) {
-        return memberMapper.findByLoginId(request.getLoginId()).orElseThrow();
+        return memberMapper.findByLoginId(request.getLoginId()).orElseThrow(() -> {
+            throw new BusinessException(INCORRECT_LOGIN_ID);
+        });
     }
 
 
     public void signup(MemberSignupRequest request) {
+        if (memberMapper.findByLoginId(request.getLoginId()).isPresent()) {
+            throw new BusinessException(DUPLICATE_LOGIN_ID);
+        }
         memberMapper.signup(Member.toEntity(request));
     }
 
-    public void login(MemberLoginRequest request) {
-        Optional<Member> member = memberMapper.findByLoginId(request.getLoginId());
-        if (!member.get().getPassword().equals(request.getPassword())) {
-            return;
+    public MemberLoginResponse login(MemberLoginRequest request) {
+        Member member = findByLoginId(request);
+        if (!member.isPasswordMatch(request.getPassword())) {
+            throw new BusinessException(INCORRECT_PASSWORD);
         }
-        log.info("요청 비밀번호: {}, 찾은 비밀번호: {}", request.getPassword(), member.get().getPassword());
+        return MemberLoginResponse.from(member.getId());
     }
-
-
 }

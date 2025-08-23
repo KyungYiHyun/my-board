@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/my-board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/board
     username: root
-    password: 0000
+    password: '0000'
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 logging:
@@ -15,5 +15,5 @@ logging:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  mapper-locations: classpath:mappers/**/*.xml
+  mapper-locations: classpath:com/my_board/**/*.xml
   type-aliases-package: com.my_board

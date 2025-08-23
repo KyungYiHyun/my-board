@@ -7,8 +7,10 @@ import java.util.Optional;
 @org.apache.ibatis.annotations.Mapper
 public interface MemberMapper {
 
-    Optional<Member> findById(Long id);
+    Optional<Member> findByLoginId(String loginId);
 
-    void insert(Member member);
+    void signup(Member member);
+
+
 
 }

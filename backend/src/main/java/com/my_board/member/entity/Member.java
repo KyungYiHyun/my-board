@@ -1,15 +1,18 @@
 package com.my_board.member.entity;
 
 import com.my_board.common.BaseEntity;
+import com.my_board.member.dto.request.MemberLoginRequest;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Member extends BaseEntity {
     private Long id;
     private String loginId;
@@ -43,6 +46,8 @@ public class Member extends BaseEntity {
                 .password(request.getPassword())
                 .build();
     }
+
+
 
 
 

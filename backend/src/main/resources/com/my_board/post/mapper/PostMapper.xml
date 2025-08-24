@@ -11,11 +11,18 @@
     </insert>
 
     <select id="findById" parameterType="Long" resultType="GetPostResponse">
-        SELECT p.id,m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.is_edited
+        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.is_edited
         FROM post p
         JOIN member m
         ON p.member_id = m.id
         WHERE p.id = #{id}
+    </select>
+
+    <select id="getAllPosts" resultType="GetAllPostResponse">
+        SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at
+        FROM post p
+        JOIN member m
+        ON p.member_id = m.id
     </select>
 
 </mapper>

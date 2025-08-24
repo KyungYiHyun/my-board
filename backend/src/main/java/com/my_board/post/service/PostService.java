@@ -4,12 +4,14 @@ import com.my_board.common.dto.BaseResponseStatus;
 import com.my_board.common.exception.BusinessException;
 import com.my_board.post.dto.request.CreatePostRequest;
 import com.my_board.post.dto.response.CreatePostResponse;
+import com.my_board.post.dto.response.GetAllPostResponse;
 import com.my_board.post.dto.response.GetPostResponse;
 import com.my_board.post.entity.Post;
 import com.my_board.post.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.my_board.common.dto.BaseResponseStatus.*;
@@ -33,5 +35,9 @@ public class PostService {
 
         return response;
 
+    }
+
+    public List<GetAllPostResponse> getAllPosts() {
+        return postMapper.getAllPosts();
     }
 }

@@ -1,5 +1,6 @@
 package com.my_board.member.mapper;
 
+import com.my_board.member.dto.response.MemberSignUpResponse;
 import com.my_board.member.entity.Member;
 
 import java.util.Optional;

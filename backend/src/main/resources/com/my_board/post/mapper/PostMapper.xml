@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.my_board.post.mapper.PostMapper">
+    <insert id="createPost" parameterType="Post"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO post(title, content, member_id)
+        VALUES (#{title}, #{content}, #{member_id})
+
+    </insert>
+
+</mapper>

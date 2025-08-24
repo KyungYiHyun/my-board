@@ -18,14 +18,16 @@ public class Post extends BaseEntity {
 
     private int views;
     private Long member_id;
+    private boolean isEdited;
 
     @Builder
-    public Post(Long id, String title, String content, int views, Long member_id) {
+    public Post(Long id, String title, String content, int views, Long member_id,boolean isEdited) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.views = views;
         this.member_id = member_id;
+        this.isEdited = isEdited;
     }
 
     public static Post toEntity(CreatePostRequest request) {

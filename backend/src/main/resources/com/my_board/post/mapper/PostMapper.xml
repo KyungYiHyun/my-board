@@ -8,7 +8,14 @@
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO post(title, content, member_id)
         VALUES (#{title}, #{content}, #{member_id})
-
     </insert>
+
+    <select id="findById" parameterType="Long" resultType="GetPostResponse">
+        SELECT p.id,m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.is_edited
+        FROM post p
+        JOIN member m
+        ON p.member_id = m.id
+        WHERE p.id = #{id}
+    </select>
 
 </mapper>

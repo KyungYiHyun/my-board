@@ -1,5 +1,6 @@
 package com.my_board.post.service;
 
+import com.my_board.common.exception.BusinessException;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberSignUpResponse;
 import com.my_board.member.service.MemberService;
@@ -80,6 +81,25 @@ class PostServiceTest {
         List<GetAllPostResponse> allPosts = postService.getAllPosts();
         assertThat(allPosts).isNotEmpty();
         assertThat(allPosts.size()).isGreaterThan(2);
+    }
 
+    @Test
+    @DisplayName("글 삭제 성공")
+    void deletePost() {
+        // 1. 글 생성
+        CreatePostRequest request = new CreatePostRequest();
+        request.setTitle("삭제할 글 제목");
+        request.setContent("삭제할 글 내용");
+        request.setMemberId(1L);
+
+        Long postId = postService.createPost(request).getPostId();
+
+        // 2. 삭제 실행
+        postService.deletePost(postId);
+
+        // 3. 삭제 검증 → 조회 시 예외 발생해야 함
+        assertThatThrownBy(() -> postService.getPost(postId))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("글을 찾을 수 없습니다");
     }
 }

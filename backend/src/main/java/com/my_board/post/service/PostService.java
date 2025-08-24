@@ -40,4 +40,8 @@ public class PostService {
     public List<GetAllPostResponse> getAllPosts() {
         return postMapper.getAllPosts();
     }
+
+    public void deletePost(Long postId) {
+        postMapper.deletePost(postId);
+    }
 }

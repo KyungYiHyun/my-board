@@ -17,4 +17,6 @@ public interface PostMapper {
     Optional<GetPostResponse> findById(Long id);
 
     List<GetAllPostResponse> getAllPosts();
+
+    void deletePost(Long postId);
 }

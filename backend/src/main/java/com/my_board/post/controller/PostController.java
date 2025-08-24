@@ -35,4 +35,10 @@ public class PostController {
     public ResponseEntity<BaseResponse<List<GetAllPostResponse>>> getAllPosts() {
         return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts()));
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.ok(new BaseResponse<>());
+    }
 }

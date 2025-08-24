@@ -25,4 +25,10 @@
         ON p.member_id = m.id
     </select>
 
+    <delete id="deletePost" parameterType="Long">
+        DELETE
+        FROM post
+        WHERE id = #{postId}
+    </delete>
+
 </mapper>

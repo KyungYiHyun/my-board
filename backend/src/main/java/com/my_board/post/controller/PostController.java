@@ -1,8 +1,8 @@
 package com.my_board.post.controller;
 
 import com.my_board.common.dto.BaseResponse;
-import com.my_board.post.dto.request.CreatePostRequest;
-import com.my_board.post.dto.response.CreatePostResponse;
+import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
+import com.my_board.post.dto.response.CreateAndUpdatePostResponse;
 import com.my_board.post.dto.response.GetAllPostResponse;
 import com.my_board.post.dto.response.GetPostResponse;
 import com.my_board.post.service.PostService;
@@ -22,7 +22,7 @@ public class PostController {
 
     // 글 생성
     @PostMapping("")
-    public ResponseEntity<BaseResponse<CreatePostResponse>> createPost(@RequestBody CreatePostRequest request) {
+    public ResponseEntity<BaseResponse<CreateAndUpdatePostResponse>> createPost(@RequestBody CreateAndUpdatePostRequest request) {
         return ResponseEntity.ok(new BaseResponse<>(postService.createPost(request)));
     }
 
@@ -35,4 +35,17 @@ public class PostController {
     public ResponseEntity<BaseResponse<List<GetAllPostResponse>>> getAllPosts() {
         return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts()));
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.ok(new BaseResponse<>());
+    }
+
+    @PatchMapping("/{postId}")
+    public ResponseEntity<BaseResponse<CreateAndUpdatePostResponse>> updatePost(@PathVariable Long postId,
+                                                                                @RequestBody CreateAndUpdatePostRequest request) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.updatePost(postId, request)));
+    }
+
 }

@@ -25,4 +25,17 @@
         ON p.member_id = m.id
     </select>
 
+    <delete id="deletePost" parameterType="Long">
+        DELETE
+        FROM post
+        WHERE id = #{postId}
+    </delete>
+
+    <update id="updatePost">
+        UPDATE post
+        SET title = #{post.title},
+            content = #{post.content}
+        WHERE id = #{postId}
+    </update>
+
 </mapper>

@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CreatePostResponse {
+public class CreateAndUpdatePostResponse {
     private Long postId;
 
-    public static CreatePostResponse from(Long postId) {
-        return CreatePostResponse.builder()
+    public static CreateAndUpdatePostResponse of(Long postId) {
+        return CreateAndUpdatePostResponse.builder()
                 .postId(postId)
                 .build();
     }

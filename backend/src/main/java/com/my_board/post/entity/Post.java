@@ -1,7 +1,7 @@
 package com.my_board.post.entity;
 
 import com.my_board.common.entity.BaseEntity;
-import com.my_board.post.dto.request.CreatePostRequest;
+import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,13 +30,15 @@ public class Post extends BaseEntity {
         this.isEdited = isEdited;
     }
 
-    public static Post toEntity(CreatePostRequest request) {
+    public static Post toEntity(CreateAndUpdatePostRequest request) {
         return Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .member_id(request.getMemberId())
                 .build();
     }
+
+
 
 
 }

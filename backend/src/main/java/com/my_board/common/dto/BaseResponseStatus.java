@@ -26,7 +26,8 @@ public enum BaseResponseStatus {
 
     DUPLICATE_LOGIN_ID(false, HttpStatus.UNAUTHORIZED, 412, "중복된 아이디가 있습니다."),
 
-    NOT_FOUND_POST(false, HttpStatus.NOT_FOUND, 1000, "글을 찾을 수 없습니다.");
+    NOT_FOUND_POST(false, HttpStatus.NOT_FOUND, 1000, "글을 찾을 수 없습니다."),
+    NOT_FOUND_COMMENT(false, HttpStatus.NOT_FOUND, 2000, "댓글을 찾을 수 없습니다.");
 
     private final boolean isSuccess;
     @JsonIgnore

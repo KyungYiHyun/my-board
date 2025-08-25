@@ -5,7 +5,7 @@
 
 <mapper namespace="com.my_board.comment.mapper.CommentMapper">
 
-    <insert id="createComment">
+    <insert id="createComment" useGeneratedKeys="true" keyProperty="comment.id">
         INSERT INTO comments(member_id, post_id, content)
         VALUES (#{comment.memberId}, #{postId}, #{comment.content})
     </insert>
@@ -16,4 +16,10 @@
         JOIN member m ON c.member_id = m.id
         WHERE c.post_id = #{postId}
     </select>
+
+    <update id="updateComment">
+        UPDATE comments
+        SET content = #{comment.content}
+        WHERE id = #{commentId}
+    </update>
 </mapper>

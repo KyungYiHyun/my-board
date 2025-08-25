@@ -37,6 +37,7 @@ class PostServiceTest {
     CreateAndUpdatePostRequest createAndUpdatePostRequest2;
 
     Long postId;
+    Long memberId;
 
 
     @BeforeEach
@@ -49,7 +50,7 @@ class PostServiceTest {
         memberSignupRequest.setNickname("memberNick1");
 
         MemberSignUpResponse memberSignUpResponse = memberService.signup(memberSignupRequest);
-
+        memberId = memberSignUpResponse.getMemberId();
         createAndUpdatePostRequest = new CreateAndUpdatePostRequest();
         createAndUpdatePostRequest.setTitle("조회용 제목1");
         createAndUpdatePostRequest.setContent("조회용 내용1");
@@ -77,7 +78,7 @@ class PostServiceTest {
     void getAllPosts() {
         List<GetAllPostResponse> allPosts = postService.getAllPosts();
         assertThat(allPosts).isNotEmpty();
-        assertThat(allPosts.size()).isGreaterThan(2);
+        assertThat(allPosts.size()).isEqualTo(2);
     }
 
     @Test
@@ -87,7 +88,7 @@ class PostServiceTest {
         CreateAndUpdatePostRequest request = new CreateAndUpdatePostRequest();
         request.setTitle("삭제할 글 제목");
         request.setContent("삭제할 글 내용");
-        request.setMemberId(1L);
+        request.setMemberId(memberId);
 
         Long postId = postService.createPost(request).getPostId();
 
@@ -107,7 +108,7 @@ class PostServiceTest {
         CreateAndUpdatePostRequest request = new CreateAndUpdatePostRequest();
         request.setTitle("원래 제목");
         request.setContent("원래 내용");
-        request.setMemberId(1L);
+        request.setMemberId(memberId);
 
         Long postId = postService.createPost(request).getPostId();
 

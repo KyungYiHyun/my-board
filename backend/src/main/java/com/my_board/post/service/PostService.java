@@ -40,7 +40,11 @@ public class PostService {
     }
 
     public void deletePost(Long postId) {
-        postMapper.deletePost(postId);
+        int row = postMapper.deletePost(postId);
+        if (row == 0) {
+            throw new BusinessException(NOT_FOUND_POST);
+        }
+
     }
 
     public CreateAndUpdatePostResponse updatePost(Long postId, CreateAndUpdatePostRequest request) {

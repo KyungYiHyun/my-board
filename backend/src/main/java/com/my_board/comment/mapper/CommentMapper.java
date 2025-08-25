@@ -13,4 +13,6 @@ public interface CommentMapper {
     void createComment(@Param("postId") Long postId, @Param("comment") Comment comment);
 
     List<GetCommentsResponse> getComments(Long postId);
+
+    int updateComment(@Param("commentId") Long commentId,@Param("comment") Comment comment);
 }

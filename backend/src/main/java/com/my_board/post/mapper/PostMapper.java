@@ -20,7 +20,7 @@ public interface PostMapper {
 
     List<GetAllPostResponse> getAllPosts();
 
-    void deletePost(Long postId);
+    int deletePost(Long postId);
 
     int updatePost(@Param("post") Post post, @Param("postId") Long postId);
 }

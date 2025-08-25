@@ -1,8 +1,10 @@
 package com.my_board.comment.service;
 
 import com.my_board.comment.dto.request.CreateAndUpdateCommentRequest;
-import com.my_board.comment.dto.response.CreateAndUpdateCommentResponse;
+import com.my_board.comment.dto.response.CreateCommentResponse;
 import com.my_board.comment.dto.response.GetCommentsResponse;
+import com.my_board.comment.dto.response.UpdateCommentResponse;
+import com.my_board.comment.entity.Comment;
 import com.my_board.comment.mapper.CommentMapper;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberSignUpResponse;
@@ -20,7 +22,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -67,7 +68,7 @@ class CommentServiceTest {
         commentRequest.setMemberId(memberId);
         commentRequest.setContent("첫 댓글");
 
-        CreateAndUpdateCommentResponse commentResponse = commentService.createComment(postId, commentRequest);
+        CreateCommentResponse commentResponse = commentService.createComment(postId, commentRequest);
 
         // when: 댓글 조회
         List<GetCommentsResponse> comments = commentService.getComments(postId);
@@ -78,5 +79,36 @@ class CommentServiceTest {
         assertThat(comment.getContent()).isEqualTo("첫 댓글");
         assertThat(comment.getNickname()).isNotNull();
         assertThat(comment.getCreatedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("댓글 수정 성공")
+    void updateComment() {
+        // given: 글 생성
+        CreateAndUpdatePostRequest postRequest = new CreateAndUpdatePostRequest();
+        postRequest.setTitle("테스트 글");
+        postRequest.setContent("테스트 내용");
+        postRequest.setMemberId(memberId);
+        Long postId = postService.createPost(postRequest).getPostId();
+
+        // given: 댓글 작성
+        CreateAndUpdateCommentRequest commentRequest = new CreateAndUpdateCommentRequest();
+        commentRequest.setMemberId(memberId);
+        commentRequest.setContent("첫 댓글");
+
+        CreateCommentResponse commentResponse = commentService.createComment(postId, commentRequest);
+
+
+        CreateAndUpdateCommentRequest updateCommentRequest = new CreateAndUpdateCommentRequest();
+        updateCommentRequest.setContent("수정 댓글");
+        updateCommentRequest.setMemberId(memberId);
+
+        int updatedRow = commentMapper.updateComment(commentResponse.getCommentId(),Comment.toEntity(updateCommentRequest));
+
+        assertThat(updatedRow).isEqualTo(1);
+
+        // and: 수정된 댓글 확인
+        List<GetCommentsResponse> comments = commentService.getComments(postId);
+        assertThat(comments.get(0).getContent()).isEqualTo("수정 댓글");
     }
 }

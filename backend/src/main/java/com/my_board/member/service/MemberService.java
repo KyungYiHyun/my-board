@@ -4,6 +4,7 @@ import com.my_board.common.exception.BusinessException;
 import com.my_board.member.dto.request.MemberLoginRequest;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberLoginResponse;
+import com.my_board.member.dto.response.MemberSignUpResponse;
 import com.my_board.member.entity.Member;
 import com.my_board.member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,13 @@ public class MemberService {
     }
 
 
-    public void signup(MemberSignupRequest request) {
+    public MemberSignUpResponse signup(MemberSignupRequest request) {
         if (memberMapper.findByLoginId(request.getLoginId()).isPresent()) {
             throw new BusinessException(DUPLICATE_LOGIN_ID);
         }
-        memberMapper.signup(Member.toEntity(request));
+        Member member = Member.toEntity(request);
+        memberMapper.signup(member);
+        return MemberSignUpResponse.of(member.getId());
     }
 
     public MemberLoginResponse login(MemberLoginRequest request) {

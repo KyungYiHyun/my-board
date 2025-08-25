@@ -6,6 +6,7 @@ import com.my_board.comment.dto.response.GetCommentsResponse;
 import com.my_board.comment.dto.response.UpdateCommentResponse;
 import com.my_board.comment.entity.Comment;
 import com.my_board.comment.mapper.CommentMapper;
+import com.my_board.common.exception.BusinessException;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberSignUpResponse;
 import com.my_board.member.service.MemberService;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -110,5 +112,30 @@ class CommentServiceTest {
         // and: 수정된 댓글 확인
         List<GetCommentsResponse> comments = commentService.getComments(postId);
         assertThat(comments.get(0).getContent()).isEqualTo("수정 댓글");
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 성공")
+    void deleteComment() {
+        // 1. 글 생성
+        CreateAndUpdatePostRequest postRequest = new CreateAndUpdatePostRequest();
+        postRequest.setTitle("테스트 글");
+        postRequest.setContent("테스트 내용");
+        postRequest.setMemberId(memberId);
+        Long postId = postService.createPost(postRequest).getPostId();
+
+        // given: 댓글 작성
+        CreateAndUpdateCommentRequest commentRequest = new CreateAndUpdateCommentRequest();
+        commentRequest.setMemberId(memberId);
+        commentRequest.setContent("첫 댓글");
+
+        CreateCommentResponse commentResponse = commentService.createComment(postId, commentRequest);
+
+        // 2. 삭제 실행
+        commentService.deleteComment(commentResponse.getCommentId());
+
+        // 3. 삭제 검증 → 조회 시 예외 발생해야 함
+        List<GetCommentsResponse> comments = commentService.getComments(postId);
+        assertThat(comments.size()).isEqualTo(0);
     }
 }

@@ -15,4 +15,6 @@ public interface CommentMapper {
     List<GetCommentsResponse> getComments(Long postId);
 
     int updateComment(@Param("commentId") Long commentId,@Param("comment") Comment comment);
+
+    int deleteComment(Long commentId);
 }

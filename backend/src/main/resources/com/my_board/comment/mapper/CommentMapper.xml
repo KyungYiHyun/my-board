@@ -22,4 +22,10 @@
         SET content = #{comment.content}
         WHERE id = #{commentId}
     </update>
+
+    <delete id="deleteComment" parameterType="Long">
+        DELETE
+        FROM comments
+        WHERE id = #{commentId}
+    </delete>
 </mapper>

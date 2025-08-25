@@ -38,4 +38,11 @@ public class CommentService {
         }
         return UpdateCommentResponse.of(commentId);
     }
+
+    public void deleteComment(Long commentId) {
+        int row= commentMapper.deleteComment(commentId);
+        if (row == 0) {
+            throw new BusinessException(NOT_FOUND_COMMENT);
+        }
+    }
 }

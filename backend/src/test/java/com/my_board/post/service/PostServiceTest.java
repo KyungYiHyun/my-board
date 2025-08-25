@@ -4,12 +4,10 @@ import com.my_board.common.exception.BusinessException;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberSignUpResponse;
 import com.my_board.member.service.MemberService;
-import com.my_board.post.dto.request.CreatePostRequest;
-import com.my_board.post.dto.response.CreatePostResponse;
+import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
 import com.my_board.post.dto.response.GetAllPostResponse;
 import com.my_board.post.dto.response.GetPostResponse;
 import com.my_board.post.mapper.PostMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +19,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -36,8 +33,8 @@ class PostServiceTest {
     @Autowired
     private PostMapper postMapper;
 
-    CreatePostRequest createPostRequest;
-    CreatePostRequest createPostRequest2;
+    CreateAndUpdatePostRequest createAndUpdatePostRequest;
+    CreateAndUpdatePostRequest createAndUpdatePostRequest2;
 
     Long postId;
 
@@ -47,23 +44,23 @@ class PostServiceTest {
         MemberSignupRequest memberSignupRequest = new MemberSignupRequest();
         memberSignupRequest.setLoginId("member1");
         memberSignupRequest.setMemberName("member1");
-        memberSignupRequest.setBirth(LocalDate.of(2000,3,4));
+        memberSignupRequest.setBirth(LocalDate.of(2000, 3, 4));
         memberSignupRequest.setPassword("12345");
         memberSignupRequest.setNickname("memberNick1");
 
         MemberSignUpResponse memberSignUpResponse = memberService.signup(memberSignupRequest);
 
-        createPostRequest = new CreatePostRequest();
-        createPostRequest.setTitle("조회용 제목1");
-        createPostRequest.setContent("조회용 내용1");
-        createPostRequest.setMemberId(memberSignUpResponse.getMemberId());
-        postId = postService.createPost(createPostRequest).getPostId();
+        createAndUpdatePostRequest = new CreateAndUpdatePostRequest();
+        createAndUpdatePostRequest.setTitle("조회용 제목1");
+        createAndUpdatePostRequest.setContent("조회용 내용1");
+        createAndUpdatePostRequest.setMemberId(memberSignUpResponse.getMemberId());
+        postId = postService.createPost(createAndUpdatePostRequest).getPostId();
 
-        createPostRequest2= new CreatePostRequest();
-        createPostRequest2.setTitle("조회용 제목2");
-        createPostRequest2.setContent("조회용 내용2");
-        createPostRequest2.setMemberId(memberSignUpResponse.getMemberId());
-        postService.createPost(createPostRequest2);
+        createAndUpdatePostRequest2 = new CreateAndUpdatePostRequest();
+        createAndUpdatePostRequest2.setTitle("조회용 제목2");
+        createAndUpdatePostRequest2.setContent("조회용 내용2");
+        createAndUpdatePostRequest2.setMemberId(memberSignUpResponse.getMemberId());
+        postService.createPost(createAndUpdatePostRequest2);
 
     }
 
@@ -71,8 +68,8 @@ class PostServiceTest {
     @DisplayName("글 조회 성공")
     void createPost() {
         GetPostResponse getPostResponse = postService.getPost(postId);
-        assertThat(createPostRequest.getTitle()).isEqualTo(getPostResponse.getTitle());
-        assertThat(createPostRequest.getContent()).isEqualTo(getPostResponse.getContent());
+        assertThat(createAndUpdatePostRequest.getTitle()).isEqualTo(getPostResponse.getTitle());
+        assertThat(createAndUpdatePostRequest.getContent()).isEqualTo(getPostResponse.getContent());
     }
 
     @Test
@@ -87,7 +84,7 @@ class PostServiceTest {
     @DisplayName("글 삭제 성공")
     void deletePost() {
         // 1. 글 생성
-        CreatePostRequest request = new CreatePostRequest();
+        CreateAndUpdatePostRequest request = new CreateAndUpdatePostRequest();
         request.setTitle("삭제할 글 제목");
         request.setContent("삭제할 글 내용");
         request.setMemberId(1L);
@@ -101,5 +98,31 @@ class PostServiceTest {
         assertThatThrownBy(() -> postService.getPost(postId))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("글을 찾을 수 없습니다");
+    }
+
+    @Test
+    @DisplayName("글 수정 성공")
+    void updatePostSuccess() {
+        // given: 글 생성
+        CreateAndUpdatePostRequest request = new CreateAndUpdatePostRequest();
+        request.setTitle("원래 제목");
+        request.setContent("원래 내용");
+        request.setMemberId(1L);
+
+        Long postId = postService.createPost(request).getPostId();
+
+        // when: 글 수정
+        String newTitle = "수정된 제목";
+        String newContent = "수정된 내용";
+        CreateAndUpdatePostRequest createAndUpdatePostRequest = new CreateAndUpdatePostRequest();
+        createAndUpdatePostRequest.setTitle(newTitle);
+        createAndUpdatePostRequest.setContent(newContent);
+        postService.updatePost(postId, createAndUpdatePostRequest);
+
+        // then: 수정된 값이 반영되었는지 조회 확인
+        GetPostResponse updatedPost = postService.getPost(postId);
+
+        assertThat(updatedPost.getTitle()).isEqualTo(newTitle);
+        assertThat(updatedPost.getContent()).isEqualTo(newContent);
     }
 }

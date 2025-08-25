@@ -1,9 +1,11 @@
 package com.my_board.post.mapper;
 
+import com.my_board.post.dto.response.CreateAndUpdatePostResponse;
 import com.my_board.post.dto.response.GetAllPostResponse;
 import com.my_board.post.dto.response.GetPostResponse;
 import com.my_board.post.entity.Post;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +21,6 @@ public interface PostMapper {
     List<GetAllPostResponse> getAllPosts();
 
     void deletePost(Long postId);
+
+    int updatePost(@Param("post") Post post, @Param("postId") Long postId);
 }

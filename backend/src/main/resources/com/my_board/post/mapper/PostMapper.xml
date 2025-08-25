@@ -31,4 +31,11 @@
         WHERE id = #{postId}
     </delete>
 
+    <update id="updatePost">
+        UPDATE post
+        SET title = #{post.title},
+            content = #{post.content}
+        WHERE id = #{postId}
+    </update>
+
 </mapper>

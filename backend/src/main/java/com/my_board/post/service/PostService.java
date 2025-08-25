@@ -1,9 +1,8 @@
 package com.my_board.post.service;
 
-import com.my_board.common.dto.BaseResponseStatus;
 import com.my_board.common.exception.BusinessException;
-import com.my_board.post.dto.request.CreatePostRequest;
-import com.my_board.post.dto.response.CreatePostResponse;
+import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
+import com.my_board.post.dto.response.CreateAndUpdatePostResponse;
 import com.my_board.post.dto.response.GetAllPostResponse;
 import com.my_board.post.dto.response.GetPostResponse;
 import com.my_board.post.entity.Post;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.my_board.common.dto.BaseResponseStatus.*;
 
@@ -22,10 +20,10 @@ public class PostService {
 
     private final PostMapper postMapper;
 
-    public CreatePostResponse createPost(CreatePostRequest request) {
+    public CreateAndUpdatePostResponse createPost(CreateAndUpdatePostRequest request) {
         Post post = Post.toEntity(request);
         postMapper.createPost(post);
-        return CreatePostResponse.from(post.getId());
+        return CreateAndUpdatePostResponse.of(post.getId());
     }
 
     public GetPostResponse getPost(Long postId) {
@@ -43,5 +41,14 @@ public class PostService {
 
     public void deletePost(Long postId) {
         postMapper.deletePost(postId);
+    }
+
+    public CreateAndUpdatePostResponse updatePost(Long postId, CreateAndUpdatePostRequest request) {
+        Post post = Post.toEntity(request);
+        int row = postMapper.updatePost(post, postId);
+        if (row == 0) {
+            throw new BusinessException(NOT_FOUND_POST);
+        }
+        return CreateAndUpdatePostResponse.of(postId);
     }
 }

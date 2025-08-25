@@ -9,4 +9,11 @@
         INSERT INTO comments(member_id, post_id, content)
         VALUES (#{comment.memberId}, #{postId}, #{comment.content})
     </insert>
+
+    <select id="getComments" parameterType="Long" resultType="GetCommentsResponse">
+        SELECT c.id AS commentId, m.nickname, c.content, c.created_at, c.modified_at
+        FROM comments c
+        JOIN member m ON c.member_id = m.id
+        WHERE c.post_id = #{postId}
+    </select>
 </mapper>

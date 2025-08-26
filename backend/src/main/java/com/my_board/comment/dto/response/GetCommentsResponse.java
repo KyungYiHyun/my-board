@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 public class GetCommentsResponse {
     private Long commentId;
+    private Long memberId;
     private String nickname;
     private String content;
     private LocalDateTime createdAt;

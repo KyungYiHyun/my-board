@@ -11,7 +11,7 @@
     </insert>
 
     <select id="getComments" parameterType="Long" resultType="GetCommentsResponse">
-        SELECT c.id AS commentId, m.nickname, c.content, c.created_at, c.modified_at
+        SELECT c.id AS commentId, m.nickname, c.content, c.created_at, c.modified_at, c.member_Id
         FROM comments c
         JOIN member m ON c.member_id = m.id
         WHERE c.post_id = #{postId}

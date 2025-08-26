@@ -4,7 +4,8 @@ import PostDetail from "./pages/PostDetail";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
-// import PostCreate from "./pages/PostCreate";
+import PostCreate from "./pages/PostCreate";
+
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
           <Route path="/posts/:postId" element={<PostDetail />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/create" element={<PostCreate />} /> */}
+          <Route path="/create" element={<PostCreate />} />
         </Routes>
       </div>
     </Router>

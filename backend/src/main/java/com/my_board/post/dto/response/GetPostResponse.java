@@ -20,5 +20,6 @@ public class GetPostResponse {
     private boolean isEdited;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private Long memberId;
 
 }

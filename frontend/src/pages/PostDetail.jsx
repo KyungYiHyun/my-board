@@ -6,11 +6,10 @@ import { format } from "date-fns";
 export default function PostDetail() {
     const { postId } = useParams();
     const navigate = useNavigate();
+    const loggedInMemberId = localStorage.getItem("memberId"); // 로그인한 사용자 ID
+
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    // 로그인된 사용자 ID
-    const loggedInMemberId = localStorage.getItem("memberId");
 
     useEffect(() => {
         axios
@@ -25,11 +24,25 @@ export default function PostDetail() {
             });
     }, [postId]);
 
-    if (loading) return <p className="text-gray-500">로딩 중...</p>;
-    if (!post) return <p className="text-gray-500">게시글을 찾을 수 없습니다.</p>;
+    const handleDelete = async () => {
+        if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
-    // 글 작성자와 로그인 사용자 비교
-    const isAuthor = loggedInMemberId && loggedInMemberId === String(post.memberId);
+        try {
+            await axios.delete(`http://localhost:8080/api/posts/${postId}`, {
+                data: { memberId: loggedInMemberId },
+            });
+            alert("삭제 완료!");
+            navigate("/"); // 삭제 후 목록으로 이동
+        } catch (err) {
+            console.error("삭제 실패", err);
+            alert("삭제 실패");
+        }
+    };
+
+    if (loading) return <p className="text-gray-500 text-center mt-10">로딩 중...</p>;
+    if (!post) return <p className="text-gray-500 text-center mt-10">게시글을 찾을 수 없습니다.</p>;
+
+    const isAuthor = loggedInMemberId === String(post.memberId); // 작성자 체크
 
     return (
         <div className="max-w-4xl mx-auto mt-6 px-4">
@@ -58,30 +71,18 @@ export default function PostDetail() {
                     목록
                 </Link>
 
+                {/* 작성자만 수정/삭제 가능 */}
                 {isAuthor && (
                     <>
-                        <button
+                        <Link
+                            to={`/posts/${postId}/edit`}
                             className="px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-100 text-sm"
-                            onClick={() => navigate(`/posts/${postId}/edit`)}
                         >
                             수정
-                        </button>
+                        </Link>
                         <button
+                            onClick={handleDelete}
                             className="px-3 py-1.5 border border-red-400 text-red-500 rounded hover:bg-red-50 text-sm"
-                            onClick={() => {
-                                if (window.confirm("정말 삭제하시겠습니까?")) {
-                                    axios
-                                        .delete(`http://localhost:8080/api/posts/${postId}`)
-                                        .then(() => {
-                                            alert("삭제 완료!");
-                                            navigate("/");
-                                        })
-                                        .catch((err) => {
-                                            console.error("삭제 실패", err);
-                                            alert("삭제 실패");
-                                        });
-                                }
-                            }}
                         >
                             삭제
                         </button>

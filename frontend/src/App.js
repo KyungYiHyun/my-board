@@ -5,6 +5,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import PostCreate from "./pages/PostCreate";
+import PostEdit from "./pages/PostEdit";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/create" element={<PostCreate />} />
+          <Route path="/posts/:postId/edit" element={<PostEdit />} />
         </Routes>
       </div>
     </Router>

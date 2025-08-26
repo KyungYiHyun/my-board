@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import PostList from "./pages/PostList";
-import PostDetail from "./pages/PostDetail";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+import PostList from "./pages/posts/PostList";
+import PostDetail from "./pages/posts/PostDetail";
+import Signup from "./pages/members/Signup";
+import Login from "./pages/members/Login";
 import Navbar from "./components/Navbar";
-import PostCreate from "./pages/PostCreate";
-import PostEdit from "./pages/PostEdit";
+import PostCreate from "./pages/posts/PostCreate";
+import PostEdit from "./pages/posts/PostEdit";
 
 
 function App() {

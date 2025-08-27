@@ -22,4 +22,6 @@ public class GetCommentsResponse {
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private int depth;
+    private Long parentId;
 }

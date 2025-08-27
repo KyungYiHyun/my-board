@@ -20,10 +20,25 @@ import static com.my_board.common.dto.BaseResponseStatus.*;
 public class CommentService {
 
     private final CommentMapper commentMapper;
+
     public CreateCommentResponse createComment(Long postId, CreateAndUpdateCommentRequest request) {
+
+        int depth = getCommentDepth(request.getParentId());
         Comment comment = Comment.toEntity(request);
-        commentMapper.createComment(postId, comment);
+        commentMapper.createComment(postId, comment, depth);
         return CreateCommentResponse.of(postId, comment.getId());
+    }
+
+    public int getCommentDepth(Long parentId) {
+        if (parentId == null) {
+            return 0;
+        }
+
+        Integer depth = commentMapper.getCommentDepth(parentId);
+        if (depth == null) {
+            throw new BusinessException(NOT_FOUND_COMMENT);
+        }
+        return depth + 1;
     }
 
 
@@ -40,7 +55,7 @@ public class CommentService {
     }
 
     public void deleteComment(Long commentId) {
-        int row= commentMapper.deleteComment(commentId);
+        int row = commentMapper.deleteComment(commentId);
         if (row == 0) {
             throw new BusinessException(NOT_FOUND_COMMENT);
         }

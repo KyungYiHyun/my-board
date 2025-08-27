@@ -90,11 +90,22 @@ export default function PostDetail() {
     return (
         <div className="max-w-4xl mx-auto mt-6 px-4">
             {/* 게시글 제목 */}
+            {/* 게시글 제목 */}
             <div className="border-b pb-3 mb-4">
                 <h1 className="text-lg font-bold">{post.title}</h1>
                 <div className="flex justify-between text-sm text-gray-500 mt-1">
                     <span className="font-medium text-gray-700">{post.nickname}</span>
-                    <span>{format(new Date(post.createdAt), "yyyy.MM.dd HH:mm")}</span>
+                    <div className="flex flex-col items-end">
+                        <span>
+                            {format(new Date(post.createdAt), "yyyy.MM.dd HH:mm")}
+                            {post.isEdited && <span className="ml-1 text-xs text-gray-400">(수정됨)</span>}
+                        </span>
+                        {post.isEdited && (
+                            <span className="text-xs text-gray-400">
+                                수정시간: {format(new Date(post.modifiedAt), "yyyy.MM.dd HH:mm")}
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
 

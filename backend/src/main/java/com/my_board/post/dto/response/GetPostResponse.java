@@ -1,6 +1,7 @@
 package com.my_board.post.dto.response;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.my_board.post.entity.Post;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class GetPostResponse {
     private String content;
     private int views;
     private String nickname;
+    @JsonProperty("isEdited")
     private boolean isEdited;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;

@@ -11,7 +11,9 @@
     </insert>
 
     <select id="findById" parameterType="Long" resultType="GetPostResponse">
-        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.is_edited, p.member_id
+        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.member_id,
+        CASE WHEN p.created_at != p.modified_at THEN true
+        ELSE false END AS isEdited
         FROM post p
         JOIN member m
         ON p.member_id = m.id

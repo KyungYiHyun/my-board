@@ -30,7 +30,6 @@ public class PostService {
         GetPostResponse response = postMapper.findById(postId).orElseThrow(() -> {
             throw new BusinessException(NOT_FOUND_POST);
         });
-
         return response;
 
     }

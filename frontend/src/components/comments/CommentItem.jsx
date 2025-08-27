@@ -16,8 +16,16 @@ export default function CommentItem({ comment, loggedInMemberId, onDelete, onUpd
         <div className="p-2 border rounded bg-gray-50">
             <div className="flex justify-between text-sm text-gray-600 mb-1">
                 <span>{comment.nickname}</span>
-                <span>{new Date(comment.createdAt).toLocaleString()}</span>
+                <div className="flex flex-col items-end">
+                    <span>{new Date(comment.createdAt).toLocaleString()}</span>
+                    {comment.isEdited && (
+                        <span className="text-gray-400 text-xs">
+                            (수정됨: {new Date(comment.modifiedAt).toLocaleString()})
+                        </span>
+                    )}
+                </div>
             </div>
+
 
             {editing ? (
                 <div className="flex space-x-2">

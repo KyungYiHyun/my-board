@@ -16,6 +16,8 @@ public class GetCommentsResponse {
     private Long memberId;
     @JsonProperty("isEdited")
     private boolean isEdited;
+    @JsonProperty("isDeleted")
+    private boolean isDeleted;
     private String nickname;
     private String content;
     private LocalDateTime createdAt;

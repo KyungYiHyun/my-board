@@ -16,7 +16,7 @@ public interface CommentMapper {
 
     int updateComment(@Param("commentId") Long commentId,@Param("comment") Comment comment);
 
-    int deleteComment(Long commentId);
+    int deleteComment(@Param("commentId") Long commentId);
 
     Integer getCommentDepth(Long parentId);
 }

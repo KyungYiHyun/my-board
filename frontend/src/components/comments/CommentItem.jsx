@@ -45,17 +45,22 @@ export default function CommentItem({ comment, loggedInMemberId, onDelete, onUpd
                     </div>
                 ) : (
                     <div className="flex justify-between items-center">
-                        <p className="text-gray-800 text-sm">{comment.content}</p>
+                        <p className="text-gray-800 text-sm">
+                            {comment.isDeleted ? "(삭제된 댓글입니다.)" : comment.content}
+                        </p>
                         <div className="space-x-1 flex">
-                            {isAuthor && (
+                            {!comment.isDeleted && isAuthor && (
                                 <>
                                     <button onClick={() => setEditing(true)} className="text-blue-500 text-xs">수정</button>
                                     <button onClick={() => onDelete(comment.commentId)} className="text-red-500 text-xs">삭제</button>
                                 </>
                             )}
-                            <button onClick={() => setReplying(!replying)} className="text-gray-500 text-xs">답글</button>
+                            {!comment.isDeleted && (
+                                <button onClick={() => setReplying(!replying)} className="text-gray-500 text-xs">답글</button>
+                            )}
                         </div>
                     </div>
+
                 )}
 
                 {/* 답글 작성 영역 */}

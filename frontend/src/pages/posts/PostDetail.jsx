@@ -73,7 +73,7 @@ export default function PostDetail() {
     const handleCommentDelete = async (commentId) => {
         if (!window.confirm("정말 삭제하시겠습니까?")) return;
         try {
-            await axios.patch(`http://localhost:8080/api/comments/${commentId}`, {
+            await axios.delete(`http://localhost:8080/api/comments/${commentId}`, {
                 memberId: loggedInMemberId,
             });
             fetchComments();

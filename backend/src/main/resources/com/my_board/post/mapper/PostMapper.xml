@@ -21,7 +21,8 @@
     </select>
 
     <select id="getAllPosts" resultType="GetAllPostResponse">
-        SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at
+        SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
         FROM post p
         JOIN member m
         ON p.member_id = m.id

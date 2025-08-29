@@ -1,5 +1,6 @@
 package com.my_board.post.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.my_board.common.dto.BaseResponse;
 import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
 import com.my_board.post.dto.response.CreateAndUpdatePostResponse;
@@ -32,8 +33,8 @@ public class PostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<BaseResponse<List<GetAllPostResponse>>> getAllPosts() {
-        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts()));
+    public ResponseEntity<BaseResponse<PageInfo<GetAllPostResponse>>> getAllPosts(@RequestParam("page") int page) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page)));
     }
 
     @DeleteMapping("/{postId}")

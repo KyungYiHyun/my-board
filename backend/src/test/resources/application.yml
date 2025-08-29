@@ -18,6 +18,11 @@ logging:
   level:
     root: info
 
+pagehelper:
+  helper-dialect: mysql       # 사용할 DB 종류
+  reasonable: true            # 0보다 작은 페이지 번호를 1로 치환
+  support-methods-arguments: true  # pageNum/pageSize를 Mapper 메서드 파라미터로 바로 받음
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true

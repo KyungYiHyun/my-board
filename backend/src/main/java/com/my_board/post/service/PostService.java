@@ -1,5 +1,7 @@
 package com.my_board.post.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.my_board.common.exception.BusinessException;
 import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
 import com.my_board.post.dto.response.CreateAndUpdatePostResponse;
@@ -30,12 +32,15 @@ public class PostService {
         GetPostResponse response = postMapper.findById(postId).orElseThrow(() -> {
             throw new BusinessException(NOT_FOUND_POST);
         });
+
         return response;
 
     }
 
-    public List<GetAllPostResponse> getAllPosts() {
-        return postMapper.getAllPosts();
+    public PageInfo<GetAllPostResponse> getAllPosts(int page) {
+        final int PAGE_SIZE = 10;
+        PageHelper.startPage(page, PAGE_SIZE);
+        return new PageInfo<>(postMapper.getAllPosts());
     }
 
     public void deletePost(Long postId) {

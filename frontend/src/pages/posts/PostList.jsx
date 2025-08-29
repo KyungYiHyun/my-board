@@ -1,13 +1,18 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 
-export default function PostList() {
+export default function PostList({ highlightPostId, initialPage }) {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [posts, setPosts] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
-    const [page, setPage] = useState(1); // 현재 페이지 상태
-    const [readPosts, setReadPosts] = useState([]); // 읽은 글 ID 목록
+    const [readPosts, setReadPosts] = useState([]);
+
+    const navigate = useNavigate();
+
+    // URL에서 page 가져오기 (query 기반)
+    const page = Number(searchParams.get("page")) || initialPage || 1;
 
     // localStorage에서 읽은 글 가져오기
     useEffect(() => {
@@ -15,42 +20,40 @@ export default function PostList() {
         setReadPosts(stored);
     }, []);
 
-    const fetchPosts = (pageNum) => {
-        axios
-            .get(`http://localhost:8080/api/posts?page=${pageNum}`)
-            .then((res) => {
-                setPosts(res.data.result.list);
-                setPageInfo({
-                    pageNum: res.data.result.pageNum,
-                    pageSize: res.data.result.pageSize,
-                    total: res.data.result.total,
-                    pages: res.data.result.pages,
-                    hasNextPage: res.data.result.hasNextPage,
-                    hasPreviousPage: res.data.result.hasPreviousPage,
-                    navigatepageNums: res.data.result.navigatepageNums,
-                });
-                setPage(pageNum);
-            })
-            .catch((err) => {
-                console.error("게시글 목록 조회 실패", err);
-            });
-    };
-
+    // page가 바뀌면 서버에서 글 목록 fetch
     useEffect(() => {
-        fetchPosts(page);
-    }, []);
+        const fetchPosts = async () => {
+            try {
+                const res = await axios.get(`http://localhost:8080/api/posts?page=${page}`);
+                const data = res.data.result;
+                setPosts(data.list);
+                setPageInfo({
+                    pageNum: data.pageNum,
+                    pageSize: data.pageSize,
+                    total: data.total,
+                    pages: data.pages,
+                    hasNextPage: data.hasNextPage,
+                    hasPreviousPage: data.hasPreviousPage,
+                    navigatepageNums: data.navigatepageNums,
+                });
+            } catch (err) {
+                console.error("게시글 목록 조회 실패", err);
+            }
+        };
+        fetchPosts();
+    }, [page]);
 
     const handlePageClick = (pageNum) => {
-        fetchPosts(pageNum);
+        setSearchParams({ page: pageNum });
     };
 
     const handlePostClick = (postId) => {
-        // 클릭한 글을 읽음 처리
         if (!readPosts.includes(postId)) {
             const updated = [...readPosts, postId];
             setReadPosts(updated);
             localStorage.setItem("readPosts", JSON.stringify(updated));
         }
+        navigate(`/posts/${postId}?page=${page}`);
     };
 
     return (
@@ -70,24 +73,25 @@ export default function PostList() {
                         <tbody>
                             {posts.map((post, idx) => {
                                 const isRead = readPosts.includes(post.postId);
+                                const isHighlight = highlightPostId === post.postId;
                                 return (
                                     <tr
                                         key={post.postId}
-                                        className={`border-b hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"
-                                            }`}
+                                        className={`border-b hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"} 
+                                            ${isHighlight ? "bg-yellow-50" : ""}`}
                                     >
                                         <td className="py-2 px-2">
-                                            <Link
-                                                to={`/posts/${post.postId}`}
+                                            <button
                                                 onClick={() => handlePostClick(post.postId)}
-                                                className={`font-medium ${isRead ? "text-gray-500 no-underline" : "text-blue-600 no-underline hover:underline"}`}
+                                                className={`font-medium ${isRead
+                                                    ? "text-gray-500 no-underline"
+                                                    : "text-blue-600 no-underline hover:underline"
+                                                    }`}
                                             >
                                                 {post.title} {post.commentCount > 0 && `[${post.commentCount}]`}
-                                            </Link>
+                                            </button>
                                         </td>
-                                        <td className="py-2 px-2 text-center text-gray-700">
-                                            {post.nickname}
-                                        </td>
+                                        <td className="py-2 px-2 text-center text-gray-700">{post.nickname}</td>
                                         <td className="py-2 px-2 text-center text-gray-500">
                                             {format(new Date(post.createdAt), "yyyy.MM.dd")}
                                         </td>
@@ -100,7 +104,7 @@ export default function PostList() {
                     {/* 페이지네이션 */}
                     <div className="mt-4 flex justify-center space-x-1">
                         <button
-                            className={`px-3 py-1 border rounded ${!pageInfo.hasPreviousPage ? 'text-gray-400 cursor-not-allowed' : ''}`}
+                            className={`px-3 py-1 border rounded ${!pageInfo.hasPreviousPage ? "text-gray-400 cursor-not-allowed" : ""}`}
                             disabled={!pageInfo.hasPreviousPage}
                             onClick={() => handlePageClick(page - 1)}
                         >
@@ -110,7 +114,7 @@ export default function PostList() {
                         {pageInfo.navigatepageNums?.map((num) => (
                             <button
                                 key={num}
-                                className={`px-3 py-1 border rounded ${page === num ? 'bg-blue-500 text-white' : ''}`}
+                                className={`px-3 py-1 border rounded ${page === num ? "bg-blue-500 text-white" : ""}`}
                                 onClick={() => handlePageClick(num)}
                             >
                                 {num}
@@ -118,7 +122,7 @@ export default function PostList() {
                         ))}
 
                         <button
-                            className={`px-3 py-1 border rounded ${!pageInfo.hasNextPage ? 'text-gray-400 cursor-not-allowed' : ''}`}
+                            className={`px-3 py-1 border rounded ${!pageInfo.hasNextPage ? "text-gray-400 cursor-not-allowed" : ""}`}
                             disabled={!pageInfo.hasNextPage}
                             onClick={() => handlePageClick(page + 1)}
                         >

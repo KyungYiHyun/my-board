@@ -67,6 +67,30 @@ export default function PostDetail() {
         }
     };
 
+    const handleCommentUpdate = async (commentId, content) => {
+        try {
+            await axios.patch(`http://localhost:8080/api/comments/${commentId}`, {
+                content,
+                memberId: loggedInMemberId,
+            });
+            fetchComments();
+        } catch (err) {
+            console.error("댓글 수정 실패", err);
+        }
+    };
+
+    const handleCommentDelete = async (commentId) => {
+        if (!window.confirm("정말 삭제하시겠습니까?")) return;
+        try {
+            await axios.delete(`http://localhost:8080/api/comments/${commentId}`, {
+                memberId: loggedInMemberId,
+            });
+            fetchComments();
+        } catch (err) {
+            console.error("댓글 삭제 실패", err);
+        }
+    };
+
     if (loading) return <p className="text-gray-500 text-center mt-10">로딩 중...</p>;
     if (!post) return <p className="text-gray-500 text-center mt-10">게시글을 찾을 수 없습니다.</p>;
 
@@ -86,7 +110,13 @@ export default function PostDetail() {
 
             <div className="mt-6">
                 <CommentForm onSubmit={(content) => handleCommentCreate(content, null)} />
-                <CommentTree comments={comments} loggedInMemberId={loggedInMemberId} />
+                <CommentTree
+                    comments={comments}
+                    loggedInMemberId={loggedInMemberId}
+                    onDelete={handleCommentDelete}
+                    onUpdate={handleCommentUpdate}
+                    onReply={handleCommentCreate}
+                />
             </div>
 
             {/* 하단 글목록 - 현재 페이지로 초기화, 현재 글 강조 */}

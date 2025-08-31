@@ -41,4 +41,5 @@
         WHERE id = #{postId}
     </update>
 
+
 </mapper>

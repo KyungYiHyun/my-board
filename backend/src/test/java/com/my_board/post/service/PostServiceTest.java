@@ -128,4 +128,15 @@ class PostServiceTest {
         assertThat(updatedPost.getTitle()).isEqualTo(newTitle);
         assertThat(updatedPost.getContent()).isEqualTo(newContent);
     }
+    @Test
+    void testPagingFirstPage() {
+        int page = 1;
+        PageInfo<GetAllPostResponse> pageInfo = postService.getAllPosts(page);
+
+        assertThat(pageInfo.getPages()).isEqualTo(1);
+        assertThat(pageInfo.getList().size()).isEqualTo(2);
+        assertThat(pageInfo.getPageSize()).isEqualTo(10);
+
+    }
+
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.my_board.post_reaction.mapper.PostReactionMapper">
+    <insert id="insertReaction">
+        INSERT INTO post_reaction(member_id, post_id, type)
+        VALUES (#{memberId}, #{postId}, #{type})
+    </insert>
+
+    <delete id="deleteReaction">
+        DELETE
+        FROM post_reaction
+        WHERE post_id = #{postId}
+        AND member_id = #{memberId}
+        AND type = #{type}
+    </delete>
+
+    <select id="findReaction" resultType="PostReaction">
+        SELECT *
+        FROM post_reaction
+        WHERE post_id = #{postId}
+        AND member_id = #{memberId}
+        LIMIT 1
+    </select>
+
+    <select id="countReaction" resultType="int">
+        SELECT COUNT(*)
+        FROM post_reaction
+        WHERE post_id = #{postId}
+        AND type = #{type}
+    </select>
+
+
+</mapper>

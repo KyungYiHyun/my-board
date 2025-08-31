@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
@@ -48,5 +46,6 @@ public class PostController {
                                                                                 @RequestBody CreateAndUpdatePostRequest request) {
         return ResponseEntity.ok(new BaseResponse<>(postService.updatePost(postId, request)));
     }
+
 
 }

@@ -12,8 +12,6 @@ import com.my_board.post.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import static com.my_board.common.dto.BaseResponseStatus.*;
 
 @Service
@@ -59,4 +57,5 @@ public class PostService {
         }
         return CreateAndUpdatePostResponse.of(postId);
     }
+
 }

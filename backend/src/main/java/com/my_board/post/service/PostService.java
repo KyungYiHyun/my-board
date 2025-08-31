@@ -27,6 +27,7 @@ public class PostService {
     }
 
     public GetPostResponse getPost(Long postId) {
+
         GetPostResponse response = postMapper.findById(postId).orElseThrow(() -> {
             throw new BusinessException(NOT_FOUND_POST);
         });
@@ -57,5 +58,11 @@ public class PostService {
         }
         return CreateAndUpdatePostResponse.of(postId);
     }
+
+    public void incrementView(Long postId) {
+        postMapper.incrementView(postId);
+    }
+
+
 
 }

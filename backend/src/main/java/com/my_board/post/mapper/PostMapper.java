@@ -24,4 +24,5 @@ public interface PostMapper {
     int updatePost(@Param("post") Post post, @Param("postId") Long postId);
 
 
+    void incrementView(Long postId);
 }

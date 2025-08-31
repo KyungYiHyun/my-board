@@ -45,5 +45,11 @@
         WHERE id = #{postId}
     </update>
 
+    <update id="incrementView" parameterType="Long">
+        UPDATE post
+        SET views = views + 1
+        WHERE id = #{postId}
+    </update>
+
 
 </mapper>

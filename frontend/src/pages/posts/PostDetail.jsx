@@ -63,7 +63,7 @@ export default function PostDetail() {
 
     const fetchPost = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/posts/${postId}`);
+            const res = await axios.get(`http://localhost:8080/api/posts/${postId}`, { withCredentials: true });
             setPost(res.data.result);
         } catch (err) {
             console.error("게시글 조회 실패", err);

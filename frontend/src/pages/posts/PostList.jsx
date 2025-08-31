@@ -67,6 +67,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                             <tr>
                                 <th className="py-2 px-2 text-left w-3/5">제목</th>
                                 <th className="py-2 px-2 text-center w-1/5">작성자</th>
+                                <th className="py-2 px-2 text-center w-1/6">추천</th>
                                 <th className="py-2 px-2 text-center w-1/5">작성일</th>
                             </tr>
                         </thead>
@@ -92,6 +93,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                                             </button>
                                         </td>
                                         <td className="py-2 px-2 text-center text-gray-700">{post.nickname}</td>
+                                        <td className="py-2 px-2 text-center text-gray-500">{post.likeCount || 0}</td>
                                         <td className="py-2 px-2 text-center text-gray-500">
                                             {format(new Date(post.createdAt), "yyyy.MM.dd")}
                                         </td>

@@ -16,6 +16,51 @@ export default function PostDetail() {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [likeCount, setLikeCount] = useState(0);
+    const [dislikeCount, setDislikeCount] = useState(0);
+    const [userReaction, setUserReaction] = useState(null); // "LIKE", "DISLIKE" or null
+
+
+    // 현재 글의 추천/비추천 카운트 조회
+    const fetchLikes = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/posts/like/${postId}/${loggedInMemberId}`);
+            setLikeCount(res.data.result.likeCount);
+            setDislikeCount(res.data.result.dislikeCount);
+            setUserReaction(res.data.result.type);
+        } catch (err) {
+            console.error("좋아요/싫어요 조회 실패", err);
+        }
+    };
+
+    const handleReaction = async (type) => {
+        if (!loggedInMemberId) {
+            alert("로그인 후 이용 가능합니다.");
+            return;
+        }
+
+        try {
+            // 이미 같은 버튼 눌렀으면 토글 취소
+            await axios.post("http://localhost:8080/api/posts/like", {
+                memberId: loggedInMemberId,
+                postId,
+                type,
+            });
+
+            // 서버에서 토글 처리 후 상태 갱신
+            if (userReaction === type) {
+                setUserReaction(null); // 취소
+            } else {
+                setUserReaction(type); // 새 반응
+            }
+
+            // 최신 카운트 다시 가져오기
+            fetchLikes();
+        } catch (err) {
+            console.error("좋아요/싫어요 요청 실패", err);
+        }
+    };
+
     const fetchPost = async () => {
         try {
             const res = await axios.get(`http://localhost:8080/api/posts/${postId}`);
@@ -36,7 +81,7 @@ export default function PostDetail() {
 
     useEffect(() => {
         setLoading(true);
-        Promise.all([fetchPost(), fetchComments()]).finally(() => setLoading(false));
+        Promise.all([fetchPost(), fetchComments(), fetchLikes()]).finally(() => setLoading(false));
     }, [postId]);
 
     const buildCommentTree = (flatComments) => {
@@ -107,6 +152,23 @@ export default function PostDetail() {
             <div className="min-h-[200px] text-gray-800 text-base leading-relaxed whitespace-pre-line">
                 {post.content}
             </div>
+
+            <div className="mt-4 flex items-center space-x-4">
+                <button
+                    className={`px-3 py-1 border rounded ${userReaction === "LIKE" ? "bg-blue-500 text-white" : ""}`}
+                    onClick={() => handleReaction("LIKE")}
+                >
+                    👍 {likeCount}
+                </button>
+                <button
+                    className={`px-3 py-1 border rounded ${userReaction === "DISLIKE" ? "bg-red-500 text-white" : ""}`}
+                    onClick={() => handleReaction("DISLIKE")}
+                >
+                    👎 {dislikeCount}
+                </button>
+            </div>
+
+
 
             <div className="mt-6">
                 <CommentForm onSubmit={(content) => handleCommentCreate(content, null)} />

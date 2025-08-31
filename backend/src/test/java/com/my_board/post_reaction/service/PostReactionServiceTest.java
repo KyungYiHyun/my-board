@@ -85,7 +85,7 @@ public class PostReactionServiceTest {
         assertThat(reaction).isNotNull();
         assertThat(reaction.getType()).isEqualTo(ReactionType.LIKE);
 
-        GetReactionCountResponse counts = postReactionService.getReactionCounts(postId);
+        GetReactionCountResponse counts = postReactionService.getReactionCounts(postId, memberId);
         assertThat(counts.getLikeCount()).isEqualTo(1);
         assertThat(counts.getDislikeCount()).isEqualTo(0);
     }
@@ -101,7 +101,7 @@ public class PostReactionServiceTest {
         PostReaction reaction = postReactionMapper.findReaction(memberId, postId);
         assertThat(reaction).isNull();
 
-        GetReactionCountResponse counts = postReactionService.getReactionCounts(postId);
+        GetReactionCountResponse counts = postReactionService.getReactionCounts(postId, memberId);
         assertThat(counts.getLikeCount()).isEqualTo(0);
     }
 
@@ -117,7 +117,7 @@ public class PostReactionServiceTest {
         assertThat(reaction).isNotNull();
         assertThat(reaction.getType()).isEqualTo(ReactionType.DISLIKE);
 
-        GetReactionCountResponse counts = postReactionService.getReactionCounts(postId);
+        GetReactionCountResponse counts = postReactionService.getReactionCounts(postId, memberId);
         assertThat(counts.getLikeCount()).isEqualTo(0);
         assertThat(counts.getDislikeCount()).isEqualTo(1);
     }

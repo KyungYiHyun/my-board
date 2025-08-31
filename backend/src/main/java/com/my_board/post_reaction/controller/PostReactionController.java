@@ -22,8 +22,8 @@ public class PostReactionController {
         return ResponseEntity.ok(new BaseResponse<>());
     }
 
-    @GetMapping("/like/{postId}")
-    public ResponseEntity<BaseResponse<GetReactionCountResponse>> getReactionCount(@PathVariable Long postId) {
-        return ResponseEntity.ok(new BaseResponse<>(postReactionService.getReactionCounts(postId)));
+    @GetMapping("/like/{postId}/{memberId}")
+    public ResponseEntity<BaseResponse<GetReactionCountResponse>> getReactionCount(@PathVariable Long postId, @PathVariable Long memberId) {
+        return ResponseEntity.ok(new BaseResponse<>(postReactionService.getReactionCounts(postId, memberId)));
     }
 }

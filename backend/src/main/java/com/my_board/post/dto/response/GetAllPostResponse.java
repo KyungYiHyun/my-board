@@ -15,5 +15,6 @@ public class GetAllPostResponse {
     private int views;
     private LocalDateTime createdAt;
     private int commentCount;
+    private int likeCount;
 
 }

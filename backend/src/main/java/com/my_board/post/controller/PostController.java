@@ -21,6 +21,7 @@ public class PostController {
     private final PostService postService;
 
     private final ViewCookieService viewCookieService;
+
     // 글 생성
     @PostMapping("")
     public ResponseEntity<BaseResponse<CreateAndUpdatePostResponse>> createPost(@RequestBody CreateAndUpdatePostRequest request) {
@@ -39,8 +40,10 @@ public class PostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<BaseResponse<PageInfo<GetAllPostResponse>>> getAllPosts(@RequestParam("page") int page) {
-        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page)));
+    public ResponseEntity<BaseResponse<PageInfo<GetAllPostResponse>>> getAllPosts(@RequestParam(name = "page", required = false) int page,
+                                                                                  @RequestParam(name = "sort_index",required = false) String sortIndex,
+                                                                                  @RequestParam(name = "order_type",required = false) String orderType) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page,sortIndex,orderType)));
     }
 
     @DeleteMapping("/{postId}")

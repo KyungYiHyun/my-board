@@ -8,11 +8,26 @@ export default function PostList({ highlightPostId, initialPage }) {
     const [posts, setPosts] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
     const [readPosts, setReadPosts] = useState([]);
+    const [sortIndex, setSortIndex] = useState("created_at"); // 기본 정렬
+    const [orderType, setOrderType] = useState("desc");       // 기본 내림차순
+
 
     const navigate = useNavigate();
 
     // URL에서 page 가져오기 (query 기반)
     const page = Number(searchParams.get("page")) || initialPage || 1;
+
+
+    const handleSort = (column) => {
+        if (sortIndex === column) {
+            // 같은 컬럼 클릭 시 정렬 방향 토글
+            setOrderType(orderType === "asc" ? "desc" : "asc");
+        } else {
+            setSortIndex(column);
+            setOrderType("desc"); // 새 컬럼 클릭 시 기본 내림차순
+        }
+        setSearchParams({ page: 1, sort_index: column, order_type: orderType });
+    };
 
     // localStorage에서 읽은 글 가져오기
     useEffect(() => {
@@ -20,11 +35,12 @@ export default function PostList({ highlightPostId, initialPage }) {
         setReadPosts(stored);
     }, []);
 
-    // page가 바뀌면 서버에서 글 목록 fetch
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/api/posts?page=${page}`);
+                const res = await axios.get(
+                    `http://localhost:8080/api/posts?page=${page}&sort_index=${sortIndex}&order_type=${orderType}`
+                );
                 const data = res.data.result;
                 setPosts(data.list);
                 setPageInfo({
@@ -41,10 +57,14 @@ export default function PostList({ highlightPostId, initialPage }) {
             }
         };
         fetchPosts();
-    }, [page]);
+    }, [page, sortIndex, orderType]);
 
     const handlePageClick = (pageNum) => {
-        setSearchParams({ page: pageNum });
+        setSearchParams({
+            page: pageNum,
+            sort_index: sortIndex,
+            order_type: orderType
+        });
     };
 
     const handlePostClick = (postId) => {
@@ -67,9 +87,24 @@ export default function PostList({ highlightPostId, initialPage }) {
                             <tr>
                                 <th className="py-2 px-2 text-left w-3/5">제목</th>
                                 <th className="py-2 px-2 text-center w-1/5">작성자</th>
-                                <th className="py-2 px-2 text-center w-1/6">조회수</th>
-                                <th className="py-2 px-2 text-center w-1/6">추천</th>
-                                <th className="py-2 px-2 text-center w-1/5">작성일</th>
+                                <th
+                                    className="py-2 px-2 text-center w-1/6 cursor-pointer whitespace-nowrap"
+                                    onClick={() => handleSort("views")}
+                                >
+                                    조회수 <span className="ml-1">{sortIndex === "views" ? (orderType === "asc" ? "▲" : "▼") : ""}</span>
+                                </th>
+                                <th
+                                    className="py-2 px-2 text-center w-1/6 cursor-pointer whitespace-nowrap"
+                                    onClick={() => handleSort("likeCount")}
+                                >
+                                    추천 <span className="ml-1">{sortIndex === "likeCount" ? (orderType === "asc" ? "▲" : "▼") : ""}</span>
+                                </th>
+                                <th
+                                    className="py-2 px-2 text-center w-1/5 cursor-pointer whitespace-nowrap"
+                                    onClick={() => handleSort("created_at")}
+                                >
+                                    작성일 <span className="ml-1">{sortIndex === "created_at" ? (orderType === "asc" ? "▲" : "▼") : ""}</span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

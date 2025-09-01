@@ -30,6 +30,7 @@
         LEFT JOIN post_reaction pr
         ON p.id = pr.post_id
         GROUP BY p.id, p.title, m.nickname, p.views, p.created_at
+        ORDER BY ${sortIndex} ${orderType}
     </select>
 
     <delete id="deletePost" parameterType="Long">

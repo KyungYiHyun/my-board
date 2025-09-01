@@ -12,6 +12,8 @@ import com.my_board.post.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.my_board.common.dto.BaseResponseStatus.*;
 
 @Service
@@ -36,10 +38,23 @@ public class PostService {
 
     }
 
-    public PageInfo<GetAllPostResponse> getAllPosts(int page) {
-        final int PAGE_SIZE = 10;
+    public PageInfo<GetAllPostResponse> getAllPosts(int page, String sortIndex, String orderType) {
+        final int PAGE_SIZE = 20;
+
+
+        List<String> allowedSortColumns = List.of("created_at", "views", "likeCount");
+        System.out.println("sortIndex = " + sortIndex);
+        System.out.println("orderType = " + orderType);
+        if (sortIndex == null || !allowedSortColumns.contains(sortIndex)) {
+            sortIndex = "created_at"; // 기본값으로 안전하게 처리
+        }
+
+        if (orderType == null || !orderType.equalsIgnoreCase("ASC") && !orderType.equalsIgnoreCase("DESC")) {
+            orderType = "DESC"; // 기본값
+        }
+
         PageHelper.startPage(page, PAGE_SIZE);
-        return new PageInfo<>(postMapper.getAllPosts());
+        return new PageInfo<>(postMapper.getAllPosts(sortIndex, orderType));
     }
 
     public void deletePost(Long postId) {
@@ -62,7 +77,6 @@ public class PostService {
     public void incrementView(Long postId) {
         postMapper.incrementView(postId);
     }
-
 
 
 }

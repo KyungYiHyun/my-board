@@ -145,7 +145,11 @@ export default function PostDetail() {
                 <h1 className="text-lg font-bold">{post.title}</h1>
                 <div className="flex justify-between text-sm text-gray-500 mt-1">
                     <span className="font-medium text-gray-700">{post.nickname}</span>
-                    <span>{format(new Date(post.createdAt), "yyyy.MM.dd HH:mm")}</span>
+                    <div className="text-right">
+                        <span>{format(new Date(post.createdAt), "yyyy.MM.dd HH:mm")}</span>
+                        <br />
+                        <span>조회수 {post.views}</span>
+                    </div>
                 </div>
             </div>
 
@@ -171,6 +175,9 @@ export default function PostDetail() {
 
 
             <div className="mt-6">
+                <div className="flex justify-between items-center mb-2">
+                    <span className="text-md font-bold">댓글 {comments.length}개</span>
+                </div>
                 <CommentForm onSubmit={(content) => handleCommentCreate(content, null)} />
                 <CommentTree
                     comments={comments}

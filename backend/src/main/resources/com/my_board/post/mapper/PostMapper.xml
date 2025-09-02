@@ -11,7 +11,9 @@
     </insert>
 
     <select id="findById" parameterType="Long" resultType="GetPostResponse">
-        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.is_edited
+        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.member_id,
+        CASE WHEN p.created_at != p.modified_at THEN true
+        ELSE false END AS isEdited
         FROM post p
         JOIN member m
         ON p.member_id = m.id
@@ -19,10 +21,16 @@
     </select>
 
     <select id="getAllPosts" resultType="GetAllPostResponse">
-        SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at
+        SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
+        SUM(CASE WHEN pr.type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount
         FROM post p
         JOIN member m
         ON p.member_id = m.id
+        LEFT JOIN post_reaction pr
+        ON p.id = pr.post_id
+        GROUP BY p.id, p.title, m.nickname, p.views, p.created_at
+        ORDER BY ${sortIndex} ${orderType}
     </select>
 
     <delete id="deletePost" parameterType="Long">
@@ -37,5 +45,12 @@
             content = #{post.content}
         WHERE id = #{postId}
     </update>
+
+    <update id="incrementView" parameterType="Long">
+        UPDATE post
+        SET views = views + 1
+        WHERE id = #{postId}
+    </update>
+
 
 </mapper>

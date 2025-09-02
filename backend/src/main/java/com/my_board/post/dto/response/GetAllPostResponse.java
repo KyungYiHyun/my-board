@@ -14,5 +14,7 @@ public class GetAllPostResponse {
     private String nickname;
     private int views;
     private LocalDateTime createdAt;
+    private int commentCount;
+    private int likeCount;
 
 }

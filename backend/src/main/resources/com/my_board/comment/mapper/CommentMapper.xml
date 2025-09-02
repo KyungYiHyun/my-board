@@ -6,15 +6,26 @@
 <mapper namespace="com.my_board.comment.mapper.CommentMapper">
 
     <insert id="createComment" useGeneratedKeys="true" keyProperty="comment.id">
-        INSERT INTO comments(member_id, post_id, content)
-        VALUES (#{comment.memberId}, #{postId}, #{comment.content})
+        INSERT INTO comments(member_id, post_id, content, parent_id, depth)
+        VALUES (#{comment.memberId}, #{postId}, #{comment.content}, #{comment.parentId}, #{depth})
     </insert>
 
     <select id="getComments" parameterType="Long" resultType="GetCommentsResponse">
-        SELECT c.id AS commentId, m.nickname, c.content, c.created_at, c.modified_at
+        SELECT c.id AS commentId, m.nickname, c.content, c.created_at, c.modified_at, c.member_id, c.is_deleted,c.parent_id, c.depth,
+        CASE WHEN c.created_at != c.modified_at THEN true ELSE false END AS isEdited
         FROM comments c
         JOIN member m ON c.member_id = m.id
         WHERE c.post_id = #{postId}
+        ORDER BY
+        CASE WHEN c.parent_id IS NULL THEN c.created_at ELSE c.parent_id END,
+        COALESCE(c.parent_id, c.id),
+        c.created_at
+    </select>
+
+    <select id="getCommentDepth" parameterType="Long" resultType="java.lang.Integer">
+        SELECT depth
+        FROM comments
+        WHERE id = #{parentId}
     </select>
 
     <update id="updateComment">
@@ -23,9 +34,9 @@
         WHERE id = #{commentId}
     </update>
 
-    <delete id="deleteComment" parameterType="Long">
-        DELETE
-        FROM comments
+    <update id="deleteComment" parameterType="Long">
+        UPDATE comments
+        SET is_deleted = true
         WHERE id = #{commentId}
-    </delete>
+    </update>
 </mapper>

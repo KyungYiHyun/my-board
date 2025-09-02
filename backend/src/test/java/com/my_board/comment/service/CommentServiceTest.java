@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -123,19 +125,17 @@ class CommentServiceTest {
         postRequest.setContent("테스트 내용");
         postRequest.setMemberId(memberId);
         Long postId = postService.createPost(postRequest).getPostId();
-
         // given: 댓글 작성
         CreateAndUpdateCommentRequest commentRequest = new CreateAndUpdateCommentRequest();
         commentRequest.setMemberId(memberId);
         commentRequest.setContent("첫 댓글");
 
         CreateCommentResponse commentResponse = commentService.createComment(postId, commentRequest);
-
         // 2. 삭제 실행
         commentService.deleteComment(commentResponse.getCommentId());
 
         // 3. 삭제 검증 → 조회 시 예외 발생해야 함
         List<GetCommentsResponse> comments = commentService.getComments(postId);
-        assertThat(comments.size()).isEqualTo(0);
+        assertThat(comments.get(0).isDeleted()).isEqualTo(true);
     }
 }

@@ -1,5 +1,7 @@
 package com.my_board.post.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.my_board.common.exception.BusinessException;
 import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
 import com.my_board.post.dto.response.CreateAndUpdatePostResponse;
@@ -27,6 +29,7 @@ public class PostService {
     }
 
     public GetPostResponse getPost(Long postId) {
+
         GetPostResponse response = postMapper.findById(postId).orElseThrow(() -> {
             throw new BusinessException(NOT_FOUND_POST);
         });
@@ -35,8 +38,23 @@ public class PostService {
 
     }
 
-    public List<GetAllPostResponse> getAllPosts() {
-        return postMapper.getAllPosts();
+    public PageInfo<GetAllPostResponse> getAllPosts(int page, String sortIndex, String orderType) {
+        final int PAGE_SIZE = 20;
+
+
+        List<String> allowedSortColumns = List.of("created_at", "views", "likeCount");
+        System.out.println("sortIndex = " + sortIndex);
+        System.out.println("orderType = " + orderType);
+        if (sortIndex == null || !allowedSortColumns.contains(sortIndex)) {
+            sortIndex = "created_at"; // 기본값으로 안전하게 처리
+        }
+
+        if (orderType == null || !orderType.equalsIgnoreCase("ASC") && !orderType.equalsIgnoreCase("DESC")) {
+            orderType = "DESC"; // 기본값
+        }
+
+        PageHelper.startPage(page, PAGE_SIZE);
+        return new PageInfo<>(postMapper.getAllPosts(sortIndex, orderType));
     }
 
     public void deletePost(Long postId) {
@@ -55,4 +73,10 @@ public class PostService {
         }
         return CreateAndUpdatePostResponse.of(postId);
     }
+
+    public void incrementView(Long postId) {
+        postMapper.incrementView(postId);
+    }
+
+
 }

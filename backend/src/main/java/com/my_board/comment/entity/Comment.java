@@ -16,19 +16,25 @@ public class Comment extends BaseEntity {
     private Long memberId;
     private Long postId;
     private String content;
+    private Long parentId;
+    private boolean isEdited;
+    private boolean isDeleted;
+    private int depth;
 
     @Builder
-    public Comment(Long id, Long memberId, Long postId, String content) {
+    public Comment(Long id, Long memberId, Long postId, String content,Long parentId) {
         this.id = id;
         this.memberId = memberId;
         this.postId = postId;
         this.content = content;
+        this.parentId = parentId;
     }
 
     public static Comment toEntity(CreateAndUpdateCommentRequest request) {
         return Comment.builder()
                 .content(request.getContent())
                 .memberId(request.getMemberId())
+                .parentId(request.getParentId())
                 .build();
     }
 }

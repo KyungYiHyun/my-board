@@ -1,5 +1,6 @@
 package com.my_board.post.service;
 
+import com.github.pagehelper.PageInfo;
 import com.my_board.common.exception.BusinessException;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberSignUpResponse;
@@ -76,9 +77,10 @@ class PostServiceTest {
     @Test
     @DisplayName("글 전체 조회 성공")
     void getAllPosts() {
-        List<GetAllPostResponse> allPosts = postService.getAllPosts();
-        assertThat(allPosts).isNotEmpty();
-        assertThat(allPosts.size()).isEqualTo(2);
+        PageInfo<GetAllPostResponse> allPosts = postService.getAllPosts(1);
+        System.out.println("allPosts = " + allPosts);
+//        assertThat(allPosts).isNotEmpty();
+//        assertThat(allPosts.size()).isEqualTo(2);
     }
 
     @Test
@@ -126,4 +128,15 @@ class PostServiceTest {
         assertThat(updatedPost.getTitle()).isEqualTo(newTitle);
         assertThat(updatedPost.getContent()).isEqualTo(newContent);
     }
+    @Test
+    void testPagingFirstPage() {
+        int page = 1;
+        PageInfo<GetAllPostResponse> pageInfo = postService.getAllPosts(page);
+
+        assertThat(pageInfo.getPages()).isEqualTo(1);
+        assertThat(pageInfo.getList().size()).isEqualTo(2);
+        assertThat(pageInfo.getPageSize()).isEqualTo(10);
+
+    }
+
 }

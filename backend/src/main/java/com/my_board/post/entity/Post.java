@@ -15,7 +15,6 @@ public class Post extends BaseEntity {
     private Long id;
     private String title;
     private String content;
-
     private int views;
     private Long member_id;
     private boolean isEdited;

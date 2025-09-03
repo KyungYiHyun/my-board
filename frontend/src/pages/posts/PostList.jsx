@@ -93,7 +93,7 @@ export default function PostList({ highlightPostId, initialPage }) {
             setReadPosts(updated);
             localStorage.setItem("readPosts", JSON.stringify(updated));
         }
-        navigate(`/posts/${postId}?page=${page}`);
+        navigate(`/posts/${postId}?page=${page}&keyword=${keyword}`);
     };
 
     const handleSearch = () => {

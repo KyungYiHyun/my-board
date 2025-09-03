@@ -15,9 +15,9 @@ public interface PostMapper {
 
     void createPost(Post post);
 
-    Optional<GetPostResponse> findById(Long id);
+    Optional<GetPostResponse> findById(@Param("postId") Long id);
 
-    List<GetAllPostResponse> getAllPosts(@Param("sortIndex") String sortIndex, @Param("orderType") String orderType);
+    List<GetAllPostResponse> getAllPosts(@Param("sortIndex") String sortIndex, @Param("orderType") String orderType, @Param("keyword") String keyword);
 
     int deletePost(Long postId);
 

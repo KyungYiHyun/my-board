@@ -17,7 +17,7 @@
         FROM post p
         JOIN member m
         ON p.member_id = m.id
-        WHERE p.id = #{id}
+        WHERE p.id = #{postId}
     </select>
 
     <select id="getAllPosts" resultType="GetAllPostResponse">
@@ -29,6 +29,12 @@
         ON p.member_id = m.id
         LEFT JOIN post_reaction pr
         ON p.id = pr.post_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                MATCH(p.title, p.content) AGAINST(#{keyword} IN BOOLEAN MODE)
+            </if>
+        </where>
+
         GROUP BY p.id, p.title, m.nickname, p.views, p.created_at
         ORDER BY ${sortIndex} ${orderType}
     </select>
@@ -42,7 +48,7 @@
     <update id="updatePost">
         UPDATE post
         SET title = #{post.title},
-            content = #{post.content}
+        content = #{post.content}
         WHERE id = #{postId}
     </update>
 

@@ -25,4 +25,7 @@ public interface PostMapper {
 
 
     void incrementView(Long postId);
+
+    List<GetAllPostResponse> getAllPostsByLike(@Param("sortIndex") String sortIndex, @Param("orderType") String orderType, @Param("keyword") String keyword);
+
 }

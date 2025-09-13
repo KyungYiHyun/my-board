@@ -5,4 +5,23 @@
 
 <mapper namespace="com.my_board.category.mapper.CategoryMapper">
 
+    <resultMap id="CategoryParentResultMap" type="GetCategoryParentResponse">
+        <result property="parentName" column="cp_name"/>
+        <collection property="childNames" ofType="GetCategoryChildResponse">
+            <id property="id" column="cc_id"/>
+            <result property="name" column="cc_name"/>
+        </collection>
+    </resultMap>
+
+    
+    <select id="getCategory" resultMap="CategoryParentResultMap">
+        select cp.id AS cp_id,
+        cp.name AS cp_name,
+        cc.id AS cc_id,
+        cc.name AS cc_name
+        from category_parent cp join category_child cc
+        on cp.id = cc.category_parent_id
+        order by cp.sort_order, cc.sort_order
+    </select>
+
 </mapper>

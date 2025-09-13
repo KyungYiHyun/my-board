@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import CategoryMenu from "./CategoryMenu";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -12,15 +13,12 @@ export default function Navbar() {
 
     return (
         <nav className="bg-white shadow p-4 flex justify-between items-center">
-            <button
-                onClick={() => {
-                    window.location.href = "/"; // 새로고침하면서 메인페이지로 이동
-                }}
-                className="text-lg font-bold text-gray-700"
-            >
-                My Board
-            </button>
-
+            <div className="navbar-left">
+                <button className="logo-button" onClick={() => window.location.href = "/"}>
+                    My Board
+                </button>
+                <CategoryMenu />
+            </div>
             <div className="flex gap-3">
                 {memberId ? (
                     <>

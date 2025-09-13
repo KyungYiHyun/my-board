@@ -2,6 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { ca } from "date-fns/locale";
+
+
 
 export default function PostList({ highlightPostId, initialPage }) {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -12,6 +15,8 @@ export default function PostList({ highlightPostId, initialPage }) {
     const [orderType, setOrderType] = useState("desc");
     const [keywordInput, setKeywordInput] = useState(""); // 입력용
     const [keyword, setKeyword] = useState(""); // 실제 검색용
+
+
 
 
     const navigate = useNavigate();
@@ -76,6 +81,8 @@ export default function PostList({ highlightPostId, initialPage }) {
         };
         fetchPosts();
     }, [page, sortIndex, orderType, keyword]);
+
+
 
     const handleSort = (column) => {
         if (sortIndex === column) setOrderType(orderType === "asc" ? "desc" : "asc");

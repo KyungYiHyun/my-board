@@ -1,0 +1,102 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    /* 제목과 카테고리 사이 간격 */
+}
+
+.logo-button {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #111827;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.category-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.category-item {
+    position: relative;
+}
+
+.category-button {
+    background: none;
+    /* 배경 제거 */
+    border: none;
+    /* 테두리 제거 */
+    color: #111827;
+    /* 글씨 색 그대로 */
+    padding: 0.5rem 1rem;
+    /* 글씨 주변 여백 */
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.category-button:hover {
+    text-decoration: underline;
+    /* hover 시 강조 */
+}
+
+.child-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+    min-width: 140px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+
+.category-item:hover .child-menu {
+    display: block;
+}
+
+.child-menu button {
+    background: none;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    color: #111827;
+    font-size: 0.875rem;
+}
+
+.child-menu button:hover {
+    background-color: #f3f4f6;
+}
+
+.navbar-right button {
+    margin-left: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    color: #111827;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.navbar-right button:hover {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+}

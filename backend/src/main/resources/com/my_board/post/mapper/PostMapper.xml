@@ -83,6 +83,13 @@
         from post p
         join member m on m.id = p.member_id
         <where>
+            <if test="categoryChild != '' and categoryChild != null">
+                p.category_child_id = (select id
+                from category_child cc
+                where cc.name = #{categoryChild})
+            </if>
+        </where>
+        <where>
             <if test="keyword != null and keyword != ''">
                 MATCH(p.title, p.content) AGAINST(#{keyword} IN BOOLEAN MODE)
             </if>

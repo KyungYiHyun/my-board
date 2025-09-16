@@ -38,7 +38,7 @@ public class PostService {
 
     }
 
-    public PageInfo<GetAllPostResponse> getAllPosts(int page, String sortIndex, String orderType, String keyword) {
+    public PageInfo<GetAllPostResponse> getAllPosts(int page, String sortIndex, String orderType, String keyword, String categoryParent, String categoryChild) {
         final int PAGE_SIZE = 20;
         System.out.println("keyword = " + keyword);
         System.out.println("한국어");
@@ -52,7 +52,7 @@ public class PostService {
         }
 
         PageHelper.startPage(page, PAGE_SIZE);
-        return new PageInfo<>(postMapper.getAllPosts(sortIndex, orderType, keyword));
+        return new PageInfo<>(postMapper.getAllPosts(sortIndex, orderType, keyword, categoryParent, categoryChild));
     }
 
     public PageInfo<GetAllPostResponse> getAllPostsByLike(int page, String sortIndex, String orderType, String keyword) {

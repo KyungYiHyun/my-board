@@ -20,6 +20,30 @@ export default function PostDetail() {
     const [dislikeCount, setDislikeCount] = useState(0);
     const [userReaction, setUserReaction] = useState(null); // "LIKE", "DISLIKE" or null
 
+    const keyword = searchParams.get("keyword") || ""; // 검색어 가져오기
+
+
+
+    // 검색어 하이라이팅 컴포넌트
+    function HighlightText({ text, highlight }) {
+        if (!highlight) return <>{text}</>;
+
+        const regex = new RegExp(`(${highlight})`, "gi");
+        const parts = text.split(regex);
+
+        return (
+            <>
+                {parts.map((part, idx) =>
+                    regex.test(part) ? (
+                        <span key={idx} className="bg-yellow-200">{part}</span>
+                    ) : (
+                        part
+                    )
+                )}
+            </>
+        );
+    }
+
 
     // 현재 글의 추천/비추천 카운트 조회
     const fetchLikes = async () => {
@@ -142,7 +166,7 @@ export default function PostDetail() {
     return (
         <div className="max-w-4xl mx-auto mt-6 px-4">
             <div className="border-b pb-3 mb-4">
-                <h1 className="text-lg font-bold">{post.title}</h1>
+                <h1 className="text-lg font-bold"><HighlightText text={post.title} highlight={keyword} /></h1>
                 <div className="flex justify-between text-sm text-gray-500 mt-1">
                     <span className="font-medium text-gray-700">{post.nickname}</span>
                     <div className="text-right">
@@ -154,7 +178,7 @@ export default function PostDetail() {
             </div>
 
             <div className="min-h-[200px] text-gray-800 text-base leading-relaxed whitespace-pre-line">
-                {post.content}
+                <HighlightText text={post.content} highlight={keyword} />
             </div>
 
             <div className="mt-4 flex items-center space-x-4">

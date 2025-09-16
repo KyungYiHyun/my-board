@@ -17,10 +17,48 @@
         FROM post p
         JOIN member m
         ON p.member_id = m.id
-        WHERE p.id = #{id}
+        WHERE p.id = #{postId}
     </select>
 
-    <select id="getAllPosts" resultType="GetAllPostResponse">
+    <!--    <select id="getAllPosts" resultType="GetAllPostResponse">
+            SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at,
+            (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
+            SUM(CASE WHEN pr.type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount
+            FROM post p
+            JOIN member m
+            ON p.member_id = m.id
+            LEFT JOIN post_reaction pr
+            ON p.id = pr.post_id
+            <where>
+                <if test="keyword != null and keyword != ''">
+                    MATCH(p.title, p.content) AGAINST(#{keyword} IN BOOLEAN MODE)
+                </if>
+            </where>
+            GROUP BY p.id, p.title, m.nickname, p.views, p.created_at
+            ORDER BY ${sortIndex} ${orderType}
+        </select>-->
+
+    <!--    <select id="getAllPosts" resultType="GetAllPostResponse">
+            SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at
+            from post p
+            <where>
+                <if test="keyword != null and keyword != ''">
+                    MATCH(p.title, p.content) AGAINST(#{keyword} IN BOOLEAN MODE)
+                </if>
+            </where>
+            join member m on m.id = p.member_id
+            left join
+            (select post_id, count(*) as commentCount
+            from comments
+            group by post_id) c on c.post_id = p.id
+            left join
+            (select post_id, sum(case when type ='LIKE' then 1 else 0 end) as likeCount
+            from post_reaction
+            group by post_id) pr on pr.post_id = p.id
+            order by ${sortIndex} ${orderType}
+        </select>-->
+
+    <!--<select id="getAllPostsByLike" resultType="GetAllPostResponse">
         SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at,
         (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
         SUM(CASE WHEN pr.type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount
@@ -29,9 +67,36 @@
         ON p.member_id = m.id
         LEFT JOIN post_reaction pr
         ON p.id = pr.post_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (p.title LIKE CONCAT('%', #{keyword}, '%') OR p.content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+
         GROUP BY p.id, p.title, m.nickname, p.views, p.created_at
         ORDER BY ${sortIndex} ${orderType}
+    </select>-->
+
+    <select id="getAllPosts" resultType="GetAllPostResponse">
+        SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at, p.comment_count as commentCount,
+        p.like_count AS likeCount
+        from post p
+        join member m on m.id = p.member_id
+        <where>
+            <if test="categoryChild != '' and categoryChild != null">
+                p.category_child_id = (select id
+                from category_child cc
+                where cc.name = #{categoryChild})
+            </if>
+        </where>
+        <where>
+            <if test="keyword != null and keyword != ''">
+                MATCH(p.title, p.content) AGAINST(#{keyword} IN BOOLEAN MODE)
+            </if>
+        </where>
+        order by ${sortIndex} ${orderType}
     </select>
+
 
     <delete id="deletePost" parameterType="Long">
         DELETE
@@ -42,7 +107,7 @@
     <update id="updatePost">
         UPDATE post
         SET title = #{post.title},
-            content = #{post.content}
+        content = #{post.content}
         WHERE id = #{postId}
     </update>
 

@@ -41,9 +41,20 @@ public class PostController {
 
     @GetMapping("")
     public ResponseEntity<BaseResponse<PageInfo<GetAllPostResponse>>> getAllPosts(@RequestParam(name = "page", required = false) int page,
-                                                                                  @RequestParam(name = "sort_index",required = false) String sortIndex,
-                                                                                  @RequestParam(name = "order_type",required = false) String orderType) {
-        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page,sortIndex,orderType)));
+                                                                                  @RequestParam(name = "sort_index", required = false) String sortIndex,
+                                                                                  @RequestParam(name = "order_type", required = false) String orderType,
+                                                                                  @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
+                                                                                  @RequestParam(name = "category_parent", required = false) String categoryParent,
+                                                                                  @RequestParam(name = "category_child", required = false) String categoryChild) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page, sortIndex, orderType, keyword,categoryParent,categoryChild)));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<PageInfo<GetAllPostResponse>>> getAllPostsByLike(@RequestParam(name = "page", required = false) int page,
+                                                                                        @RequestParam(name = "sort_index", required = false) String sortIndex,
+                                                                                        @RequestParam(name = "order_type", required = false) String orderType,
+                                                                                        @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPostsByLike(page, sortIndex, orderType, keyword)));
     }
 
     @DeleteMapping("/{postId}")

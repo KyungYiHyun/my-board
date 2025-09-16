@@ -2,44 +2,67 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { ca } from "date-fns/locale";
+
+
 
 export default function PostList({ highlightPostId, initialPage }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const [posts, setPosts] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
     const [readPosts, setReadPosts] = useState([]);
-    const [sortIndex, setSortIndex] = useState("created_at"); // 기본 정렬
-    const [orderType, setOrderType] = useState("desc");       // 기본 내림차순
+    const [sortIndex, setSortIndex] = useState("created_at");
+    const [orderType, setOrderType] = useState("desc");
+    const [keywordInput, setKeywordInput] = useState(""); // 입력용
+    const [keyword, setKeyword] = useState(""); // 실제 검색용
+
+
 
 
     const navigate = useNavigate();
-
-    // URL에서 page 가져오기 (query 기반)
     const page = Number(searchParams.get("page")) || initialPage || 1;
 
 
-    const handleSort = (column) => {
-        if (sortIndex === column) {
-            // 같은 컬럼 클릭 시 정렬 방향 토글
-            setOrderType(orderType === "asc" ? "desc" : "asc");
-        } else {
-            setSortIndex(column);
-            setOrderType("desc"); // 새 컬럼 클릭 시 기본 내림차순
-        }
-        setSearchParams({ page: 1, sort_index: column, order_type: orderType });
-    };
+    // 검색어 하이라이팅 컴포넌트
+    function HighlightText({ text, highlight }) {
+        if (!highlight) return <>{text}</>;
 
-    // localStorage에서 읽은 글 가져오기
+        const regex = new RegExp(`(${highlight})`, "gi");
+        const parts = text.split(regex);
+
+        return (
+            <>
+                {parts.map((part, idx) =>
+                    regex.test(part) ? (
+                        <span key={idx} className="bg-yellow-200">{part}</span>
+                    ) : (
+                        part
+                    )
+                )}
+            </>
+        );
+    }
+
+    // 로컬스토리지에서 읽은 글
     useEffect(() => {
         const stored = JSON.parse(localStorage.getItem("readPosts") || "[]");
         setReadPosts(stored);
     }, []);
 
+    // 게시글 fetch
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:8080/api/posts?page=${page}&sort_index=${sortIndex}&order_type=${orderType}`
+                    `http://localhost:8080/api/posts`,
+                    {
+                        params: {
+                            page,
+                            sort_index: sortIndex,
+                            order_type: orderType,
+                            keyword: keyword || undefined
+                        }
+                    }
                 );
                 const data = res.data.result;
                 setPosts(data.list);
@@ -57,14 +80,18 @@ export default function PostList({ highlightPostId, initialPage }) {
             }
         };
         fetchPosts();
-    }, [page, sortIndex, orderType]);
+    }, [page, sortIndex, orderType, keyword]);
+
+
+
+    const handleSort = (column) => {
+        if (sortIndex === column) setOrderType(orderType === "asc" ? "desc" : "asc");
+        else setSortIndex(column);
+        setSearchParams({ page: 1, sort_index: column, order_type: orderType, keyword });
+    };
 
     const handlePageClick = (pageNum) => {
-        setSearchParams({
-            page: pageNum,
-            sort_index: sortIndex,
-            order_type: orderType
-        });
+        setSearchParams({ page: pageNum, sort_index: sortIndex, order_type: orderType, keyword });
     };
 
     const handlePostClick = (postId) => {
@@ -73,12 +100,33 @@ export default function PostList({ highlightPostId, initialPage }) {
             setReadPosts(updated);
             localStorage.setItem("readPosts", JSON.stringify(updated));
         }
-        navigate(`/posts/${postId}?page=${page}`);
+        navigate(`/posts/${postId}?page=${page}&keyword=${keyword}`);
+    };
+
+    const handleSearch = () => {
+        setKeyword(keywordInput); // Enter나 버튼 클릭 시 실제 검색용 state 업데이트
+        setSearchParams({ page: 1, sort_index: sortIndex, order_type: orderType, keyword: keywordInput });
     };
 
     return (
         <div className="max-w-4xl mx-auto mt-6 px-4">
             <h3 className="text-lg font-bold mb-4 border-b pb-2">게시판</h3>
+
+            {/* 검색 input */}
+            <div className="mb-4 flex space-x-2">
+
+                <input
+                    type="text"
+                    value={keywordInput}
+                    placeholder="검색어를 입력하세요"
+                    onChange={(e) => setKeywordInput(e.target.value)} // 입력용 state만 업데이트
+                    className="border px-2 py-1 flex-1"
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+                <button onClick={handleSearch} className="px-4 py-1 bg-blue-500 text-white rounded">
+                    검색
+                </button>
+            </div>
 
             {posts.length > 0 ? (
                 <>
@@ -88,22 +136,22 @@ export default function PostList({ highlightPostId, initialPage }) {
                                 <th className="py-2 px-2 text-left w-3/5">제목</th>
                                 <th className="py-2 px-2 text-center w-1/5">작성자</th>
                                 <th
-                                    className="py-2 px-2 text-center w-1/6 cursor-pointer whitespace-nowrap"
+                                    className="py-2 px-2 text-center w-1/6 cursor-pointer"
                                     onClick={() => handleSort("views")}
                                 >
-                                    조회수 <span className="ml-1">{sortIndex === "views" ? (orderType === "asc" ? "▲" : "▼") : ""}</span>
+                                    조회수 {sortIndex === "views" ? (orderType === "asc" ? "▲" : "▼") : ""}
                                 </th>
                                 <th
                                     className="py-2 px-2 text-center w-1/6 cursor-pointer whitespace-nowrap"
                                     onClick={() => handleSort("likeCount")}
                                 >
-                                    추천 <span className="ml-1">{sortIndex === "likeCount" ? (orderType === "asc" ? "▲" : "▼") : ""}</span>
+                                    추천 {sortIndex === "likeCount" ? (orderType === "asc" ? "▲" : "▼") : ""}
                                 </th>
                                 <th
-                                    className="py-2 px-2 text-center w-1/5 cursor-pointer whitespace-nowrap"
+                                    className="py-2 px-2 text-center w-1/5 cursor-pointer"
                                     onClick={() => handleSort("created_at")}
                                 >
-                                    작성일 <span className="ml-1">{sortIndex === "created_at" ? (orderType === "asc" ? "▲" : "▼") : ""}</span>
+                                    작성일 {sortIndex === "created_at" ? (orderType === "asc" ? "▲" : "▼") : ""}
                                 </th>
                             </tr>
                         </thead>
@@ -114,26 +162,20 @@ export default function PostList({ highlightPostId, initialPage }) {
                                 return (
                                     <tr
                                         key={post.postId}
-                                        className={`border-b hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"} 
-                                            ${isHighlight ? "bg-yellow-50" : ""}`}
+                                        className={`border-b hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"} ${isHighlight ? "bg-yellow-50" : ""}`}
                                     >
                                         <td className="py-2 px-2">
                                             <button
                                                 onClick={() => handlePostClick(post.postId)}
-                                                className={`font-medium ${isRead
-                                                    ? "text-gray-500 no-underline"
-                                                    : "text-blue-600 no-underline hover:underline"
-                                                    }`}
+                                                className={`font-medium ${isRead ? "text-gray-500" : "text-blue-600 hover:underline"}`}
                                             >
-                                                {post.title} {post.commentCount > 0 && `[${post.commentCount}]`}
+                                                <HighlightText text={post.title} highlight={keyword} /> {post.commentCount > 0 && `[${post.commentCount}]`}
                                             </button>
                                         </td>
-                                        <td className="py-2 px-2 text-center text-gray-700">{post.nickname}</td>
-                                        <td className="py-2 px-2 text-center text-gray-700">{post.views}</td>
-                                        <td className="py-2 px-2 text-center text-gray-500">{post.likeCount || 0}</td>
-                                        <td className="py-2 px-2 text-center text-gray-500">
-                                            {format(new Date(post.createdAt), "yyyy.MM.dd")}
-                                        </td>
+                                        <td className="py-2 px-2 text-center">{post.nickname}</td>
+                                        <td className="py-2 px-2 text-center">{post.views}</td>
+                                        <td className="py-2 px-2 text-center">{post.likeCount || 0}</td>
+                                        <td className="py-2 px-2 text-center">{format(new Date(post.createdAt), "yyyy.MM.dd")}</td>
                                     </tr>
                                 );
                             })}
@@ -149,7 +191,6 @@ export default function PostList({ highlightPostId, initialPage }) {
                         >
                             이전
                         </button>
-
                         {pageInfo.navigatepageNums?.map((num) => (
                             <button
                                 key={num}
@@ -159,7 +200,6 @@ export default function PostList({ highlightPostId, initialPage }) {
                                 {num}
                             </button>
                         ))}
-
                         <button
                             className={`px-3 py-1 border rounded ${!pageInfo.hasNextPage ? "text-gray-400 cursor-not-allowed" : ""}`}
                             disabled={!pageInfo.hasNextPage}
@@ -170,7 +210,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                     </div>
                 </>
             ) : (
-                <p className="text-gray-500 text-center py-10">게시글이 없습니다.</p>
+                <p className="text-gray-500 text-center py-10">게시글 불러오는중...</p>
             )}
         </div>
     );

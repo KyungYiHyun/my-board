@@ -18,6 +18,8 @@ public class Post extends BaseEntity {
     private int views;
     private Long member_id;
     private boolean isEdited;
+    private int commentCount;
+    private int likeCount;
 
     @Builder
     public Post(Long id, String title, String content, int views, Long member_id,boolean isEdited) {

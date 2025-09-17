@@ -11,4 +11,4 @@
 - Back-End : Java21, SpringBoot 3.4.8, MyBatis, MySQL
 - 버전 관리 : Git
 
-cicd test6
+cicd test7

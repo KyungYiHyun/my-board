@@ -7,6 +7,6 @@
 
 ## 2. 개발 환경
 
-- Front-End : React
+- Front-End : React, Tailwind
 - Back-End : Java21, SpringBoot 3.4.8, MyBatis, MySQL
 - 버전 관리 : Git

@@ -11,7 +11,7 @@ services:
       SPRING_DATASOURCE_URL: ${DB_URL}
       SPRING_DATASOURCE_USERNAME: ${DB_USER_NAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_USER_PWD}
-      PORT: ${PORT}
+      SERVER_PORT: ${PORT}
     depends_on:
       - mysql
 

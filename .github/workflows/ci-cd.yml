@@ -21,6 +21,10 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+      # Gradel 권한부여
+      - name: Grant Gradle Wrapper executable
+        working-directory: ./backend
+        run: chmod +x gradlew
 
       # 3. Gradle 빌드 (테스트 제외)
       - name: Build with Gradle

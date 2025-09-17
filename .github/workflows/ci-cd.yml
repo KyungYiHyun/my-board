@@ -24,6 +24,7 @@ jobs:
 
       # 3. Gradle 빌드 (테스트 제외)
       - name: Build with Gradle
+        working-directory: ./backend
         run: ./gradlew clean build -x test
 
       # 4. Docker Hub 로그인 (Private 이미지일 경우)

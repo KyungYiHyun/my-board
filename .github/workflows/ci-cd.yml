@@ -49,5 +49,6 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             docker pull ${{ secrets.DOCKER_IMAGE }}
+            cd /home/ubuntu/docker-compose
             docker-compose down
             docker-compose up -d

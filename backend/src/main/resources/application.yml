@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://${DB_URL}/${DB_NAME}
+    url:
     username: ${DB_USER_NAME}
     password: ${DB_USER_PWD}
     driver-class-name: com.mysql.cj.jdbc.Driver

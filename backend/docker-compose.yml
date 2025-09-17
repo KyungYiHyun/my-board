@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: spring-boot-app
+    image: ${DOCKER_IMAGE}
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER_NAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_USER_PWD}
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PWD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER_NAME}
+      MYSQL_PASSWORD: ${DB_USER_PWD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:

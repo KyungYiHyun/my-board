@@ -4,8 +4,9 @@
 - 개발시작 : 2024-08~
 
 ## 2. 개발 환경
-- Front-End : React
-- Back-End : Java21, SpringBoot 3.4.8, MyBatis, MySQL
+- Front-End : React, Tailwind CSS
+- Back-End : Java21, SpringBoot 3.4.8, MyBatis, MySQ
+- Infra : Docker, Github Actions, Nginx
 - 버전 관리 : Git
 
 

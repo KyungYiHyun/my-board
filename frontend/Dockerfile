@@ -1,0 +1,15 @@
+# 빌드용 이미지
+FROM node:18 as build
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+COPY ../nginx/nginx.conf /etc/nginx/conf.d/nginx.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+

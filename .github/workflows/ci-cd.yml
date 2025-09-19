@@ -42,7 +42,7 @@ jobs:
         
       # React 이미지 빌드 & Push
       - name: Build React Docker image
-        run: docker build -t ${{ secrets.REACT_IMAGE }} ./frontend
+        run: docker build -f frontend/Dockerfile -t ${{ secrets.REACT_IMAGE }} ./frontend
 
       - name: Push React Docker image
         run: docker push ${{ secrets.REACT_IMAGE }}

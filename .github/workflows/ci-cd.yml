@@ -39,7 +39,16 @@ jobs:
       # 5. Docker 이미지 Push
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_IMAGE }}
+        
+      # React 이미지 빌드 & Push
+      - name: Build React Docker image
+        working-directory: ./frontend
+        run: docker build -t ${{ secrets.REACT_IMAGE }} .
 
+      - name: Push React Docker image
+        run: docker push ${{ secrets.REACT_IMAGE }}
+
+        
       # 6. SSH to EC2 + Pull & Compose
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.6

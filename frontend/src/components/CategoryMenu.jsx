@@ -4,12 +4,13 @@ import "./CategoryMenu.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 export default function CategoryMenu() {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const [categories, setCategory] = useState([]);
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/api/category`);
+                const res = await axios.get(`${API_BASE_URL}/category`);
                 const data = res.data.result;
                 setCategory(data);
                 console.log(data);

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function PostCreate() {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const memberId = localStorage.getItem("memberId");
 
@@ -27,7 +28,7 @@ export default function PostCreate() {
         }
 
         try {
-            await axios.post("http://localhost:8080/api/posts", {
+            await axios.post(`${API_BASE_URL}/api/posts`, {
                 ...form,
                 memberId, // 글 작성자
             });

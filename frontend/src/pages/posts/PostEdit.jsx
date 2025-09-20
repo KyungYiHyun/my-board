@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function PostEdit() {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
+
     const { postId } = useParams();
     const navigate = useNavigate();
     const loggedInMemberId = localStorage.getItem("memberId");
@@ -17,7 +19,7 @@ export default function PostEdit() {
     useEffect(() => {
         // 기존 글 내용 불러오기
         axios
-            .get(`http://localhost:8080/api/posts/${postId}`)
+            .get(`${API_BASE_URL}/posts/${postId}`)
             .then((res) => {
                 const post = res.data.result;
 
@@ -48,7 +50,7 @@ export default function PostEdit() {
         e.preventDefault();
         try {
             // PATCH 요청
-            await axios.patch(`http://localhost:8080/api/posts/${postId}`, {
+            await axios.patch(`${API_BASE_URL}/posts/${postId}`, {
                 title: form.title,
                 content: form.content,
                 memberId: form.memberId,

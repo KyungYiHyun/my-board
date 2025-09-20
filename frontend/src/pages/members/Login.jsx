@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
+
     const navigate = useNavigate();
     const [form, setForm] = useState({
         loginId: "",
@@ -16,7 +18,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost:8080/api/member/login", form);
+            const res = await axios.post(`${API_BASE_URL}/member/login`, form);
             // 로그인 성공 시 토큰/아이디 저장
             localStorage.setItem("memberId", res.data.result.memberId);
             alert("로그인 성공!");

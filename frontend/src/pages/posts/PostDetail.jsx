@@ -7,6 +7,8 @@ import CommentForm from "../../components/comments/CommentForm";
 import PostList from "./PostList";
 
 export default function PostDetail() {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
+
     const { postId } = useParams();
     const [searchParams] = useSearchParams();
     const currentPage = Number(searchParams.get("page")) || 1; // 현재 페이지 받기
@@ -48,7 +50,7 @@ export default function PostDetail() {
     // 현재 글의 추천/비추천 카운트 조회
     const fetchLikes = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/posts/like/${postId}/${loggedInMemberId}`);
+            const res = await axios.get(`${API_BASE_URL}/posts/like/${postId}/${loggedInMemberId}`);
             setLikeCount(res.data.result.likeCount);
             setDislikeCount(res.data.result.dislikeCount);
             setUserReaction(res.data.result.type);
@@ -65,7 +67,7 @@ export default function PostDetail() {
 
         try {
             // 이미 같은 버튼 눌렀으면 토글 취소
-            await axios.post("http://localhost:8080/api/posts/like", {
+            await axios.post(`${API_BASE_URL}/posts/like`, {
                 memberId: loggedInMemberId,
                 postId,
                 type,
@@ -87,7 +89,7 @@ export default function PostDetail() {
 
     const fetchPost = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/posts/${postId}`, { withCredentials: true });
+            const res = await axios.get(`${API_BASE_URL}/posts/${postId}`, { withCredentials: true });
             setPost(res.data.result);
         } catch (err) {
             console.error("게시글 조회 실패", err);
@@ -96,7 +98,7 @@ export default function PostDetail() {
 
     const fetchComments = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/comments/${postId}`);
+            const res = await axios.get(`${API_BASE_URL}/comments/${postId}`);
             setComments(buildCommentTree(res.data.result));
         } catch (err) {
             console.error("댓글 조회 실패", err);

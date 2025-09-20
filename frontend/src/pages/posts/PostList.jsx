@@ -7,6 +7,7 @@ import { ca } from "date-fns/locale";
 
 
 export default function PostList({ highlightPostId, initialPage }) {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
     const [searchParams, setSearchParams] = useSearchParams();
     const [posts, setPosts] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
@@ -54,7 +55,7 @@ export default function PostList({ highlightPostId, initialPage }) {
         const fetchPosts = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:8080/api/posts`,
+                    `${API_BASE_URL}/posts`,
                     {
                         params: {
                             page,

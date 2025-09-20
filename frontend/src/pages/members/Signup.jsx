@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
+
     const navigate = useNavigate();
     const [form, setForm] = useState({
         loginId: "",
@@ -19,7 +21,7 @@ export default function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:8080/api/member/signup", form);
+            await axios.post(`${API_BASE_URL}/api/member/signup`, form);
             alert("회원가입 성공!");
             navigate("/login");
         } catch (err) {

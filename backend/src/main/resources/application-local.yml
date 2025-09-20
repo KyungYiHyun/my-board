@@ -8,4 +8,4 @@ spring:
     password: ${DB_LOCAL_USER_PWD}
 
 server:
-  port: ${PORT}
+  port: 9000

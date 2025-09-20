@@ -49,13 +49,13 @@ public class PostController {
         return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page, sortIndex, orderType, keyword,categoryParent,categoryChild)));
     }
 
-    @GetMapping("/search")
+   /* @GetMapping("/search")
     public ResponseEntity<BaseResponse<PageInfo<GetAllPostResponse>>> getAllPostsByLike(@RequestParam(name = "page", required = false) int page,
                                                                                         @RequestParam(name = "sort_index", required = false) String sortIndex,
                                                                                         @RequestParam(name = "order_type", required = false) String orderType,
                                                                                         @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {
         return ResponseEntity.ok(new BaseResponse<>(postService.getAllPostsByLike(page, sortIndex, orderType, keyword)));
-    }
+    }*/
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable Long postId) {

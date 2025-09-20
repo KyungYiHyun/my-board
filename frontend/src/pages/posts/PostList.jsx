@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { format } from "date-fns";
 import { ca } from "date-fns/locale";
 
@@ -8,6 +9,9 @@ import { ca } from "date-fns/locale";
 
 export default function PostList({ highlightPostId, initialPage }) {
     const API_BASE_URL = process.env.REACT_APP_API_URL;
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+
     const [searchParams, setSearchParams] = useSearchParams();
     const [posts, setPosts] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
@@ -16,6 +20,8 @@ export default function PostList({ highlightPostId, initialPage }) {
     const [orderType, setOrderType] = useState("desc");
     const [keywordInput, setKeywordInput] = useState(""); // 입력용
     const [keyword, setKeyword] = useState(""); // 실제 검색용
+    const categoryParent = query.get("category_parent") || ""
+    const categoryChild = query.get("category_child") || ""
 
 
 
@@ -61,7 +67,9 @@ export default function PostList({ highlightPostId, initialPage }) {
                             page,
                             sort_index: sortIndex,
                             order_type: orderType,
-                            keyword: keyword || undefined
+                            keyword: keyword || undefined,
+                            category_parent: categoryParent,
+                            category_child: categoryChild
                         }
                     }
                 );
@@ -81,7 +89,7 @@ export default function PostList({ highlightPostId, initialPage }) {
             }
         };
         fetchPosts();
-    }, [page, sortIndex, orderType, keyword]);
+    }, [page, sortIndex, orderType, keyword, categoryChild, categoryParent]);
 
 
 
@@ -92,7 +100,7 @@ export default function PostList({ highlightPostId, initialPage }) {
     };
 
     const handlePageClick = (pageNum) => {
-        setSearchParams({ page: pageNum, sort_index: sortIndex, order_type: orderType, keyword });
+        setSearchParams({ page: pageNum, sort_index: sortIndex, order_type: orderType, keyword, category_child: categoryChild, category_parent: categoryParent });
     };
 
     const handlePostClick = (postId) => {
@@ -111,7 +119,7 @@ export default function PostList({ highlightPostId, initialPage }) {
 
     return (
         <div className="max-w-4xl mx-auto mt-6 px-4">
-            <h3 className="text-lg font-bold mb-4 border-b pb-2">게시판</h3>
+            <h3 className="text-lg font-bold mb-4 border-b pb-2">{categoryChild ? categoryChild : "통합"} 게시판</h3>
 
             {/* 검색 input */}
             <div className="mb-4 flex space-x-2">

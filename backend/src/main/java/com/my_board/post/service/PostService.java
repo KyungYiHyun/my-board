@@ -40,8 +40,6 @@ public class PostService {
 
     public PageInfo<GetAllPostResponse> getAllPosts(int page, String sortIndex, String orderType, String keyword, String categoryParent, String categoryChild) {
         final int PAGE_SIZE = 20;
-        System.out.println("keyword = " + keyword);
-        System.out.println("한국어");
         List<String> allowedSortColumns = List.of("created_at", "views", "likeCount");
         if (sortIndex == null || !allowedSortColumns.contains(sortIndex)) {
             sortIndex = "created_at"; // 기본값으로 안전하게 처리
@@ -55,10 +53,8 @@ public class PostService {
         return new PageInfo<>(postMapper.getAllPosts(sortIndex, orderType, keyword, categoryParent, categoryChild));
     }
 
-    public PageInfo<GetAllPostResponse> getAllPostsByLike(int page, String sortIndex, String orderType, String keyword) {
+/*    public PageInfo<GetAllPostResponse> getAllPostsByLike(int page, String sortIndex, String orderType, String keyword) {
         final int PAGE_SIZE = 20;
-        System.out.println("keyword = " + keyword);
-        System.out.println("한국어");
         List<String> allowedSortColumns = List.of("created_at", "views", "likeCount");
         if (sortIndex == null || !allowedSortColumns.contains(sortIndex)) {
             sortIndex = "created_at"; // 기본값으로 안전하게 처리
@@ -70,7 +66,7 @@ public class PostService {
 
         PageHelper.startPage(page, PAGE_SIZE);
         return new PageInfo<>(postMapper.getAllPostsByLike(sortIndex, orderType, keyword));
-    }
+    }*/
 
     public void deletePost(Long postId) {
         int row = postMapper.deletePost(postId);

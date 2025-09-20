@@ -31,7 +31,7 @@ export default function CategoryMenu() {
                         {cat.childNames.map((child) => (
                             <button
                                 key={child.id}
-                                onClick={() => navigate(`/posts?category=${child.id}`)}
+                                onClick={() => navigate(`/posts?category_parent=${cat.parentName}&category_child=${child.name}`)}
                             >
                                 {child.name}
                             </button>

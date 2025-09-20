@@ -63,4 +63,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_IMAGE }}
             docker pull ${{ secrets.REACT_IMAGE }}
             cd /home/ubuntu/docker-compose
-            docker-compose up -d --no-deps app react-app
+            docker-compose up -d

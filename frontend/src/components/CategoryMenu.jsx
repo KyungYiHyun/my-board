@@ -22,7 +22,7 @@ export default function CategoryMenu() {
     }, [])
     return (
         <div className="category-container">
-            {categories.map((cat) => (
+            {categories.length > 0 ? categories.map((cat) => (
                 <div className="category-item" key={cat.parentName}>
                     <button className="category-button">
                         {cat.parentName}
@@ -38,7 +38,7 @@ export default function CategoryMenu() {
                         ))}
                     </div>
                 </div>
-            ))}
+            )) : "카테고리 로드 실패"}
         </div>
     );
 }

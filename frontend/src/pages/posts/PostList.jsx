@@ -146,7 +146,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                                 <th className="py-2 px-2 text-left w-3/5">제목</th>
                                 <th className="py-2 px-2 text-center w-1/5">작성자</th>
                                 <th
-                                    className="py-2 px-2 text-center w-1/6 cursor-pointer"
+                                    className="py-2 px-2 text-center w-2/5 whitespace-nowrap cursor-pointer"
                                     onClick={() => handleSort("views")}
                                 >
                                     조회수 {sortIndex === "views" ? (orderType === "asc" ? "▲" : "▼") : ""}

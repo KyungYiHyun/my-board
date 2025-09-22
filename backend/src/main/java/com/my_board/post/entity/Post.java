@@ -20,15 +20,20 @@ public class Post extends BaseEntity {
     private boolean isEdited;
     private int commentCount;
     private int likeCount;
+    private Long categoryChildId;
+    private Long categoryParentId;
 
     @Builder
-    public Post(Long id, String title, String content, int views, Long member_id,boolean isEdited) {
+    public Post(Long id, String title, String content, int views, Long member_id,boolean isEdited,
+                Long categoryChildId, Long categoryParentId) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.views = views;
         this.member_id = member_id;
         this.isEdited = isEdited;
+        this.categoryChildId = categoryChildId;
+        this.categoryParentId = categoryParentId;
     }
 
     public static Post toEntity(CreateAndUpdatePostRequest request) {
@@ -36,6 +41,8 @@ public class Post extends BaseEntity {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .member_id(request.getMemberId())
+                .categoryChildId(request.getCategoryChildId())
+                .categoryParentId(request.getCategoryParentId())
                 .build();
     }
 

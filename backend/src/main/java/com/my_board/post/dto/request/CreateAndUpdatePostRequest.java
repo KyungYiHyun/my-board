@@ -7,4 +7,7 @@ public class CreateAndUpdatePostRequest {
     private String title;
     private String content;
     private Long memberId;
+
+    private Long categoryParentId;
+    private Long categoryChildId;
 }

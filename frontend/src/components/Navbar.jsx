@@ -15,7 +15,7 @@ export default function Navbar() {
         <nav className="bg-white shadow p-4 flex justify-between items-center">
             <div className="navbar-left">
                 <button className="logo-button" onClick={() => window.location.href = "/"}>
-                    My Board
+                    Dev Board
                 </button>
                 <CategoryMenu />
             </div>

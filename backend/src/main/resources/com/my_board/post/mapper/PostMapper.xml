@@ -6,8 +6,8 @@
 <mapper namespace="com.my_board.post.mapper.PostMapper">
     <insert id="createPost" parameterType="Post"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO post(title, content, member_id)
-        VALUES (#{title}, #{content}, #{member_id})
+        INSERT INTO post(title, content, member_id, category_child_id, category_parent_id)
+        VALUES (#{title}, #{content}, #{member_id}, #{categoryChildId}, #{categoryParentId})
     </insert>
 
     <select id="findById" parameterType="Long" resultType="GetPostResponse">

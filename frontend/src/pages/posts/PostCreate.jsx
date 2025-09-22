@@ -1,21 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 
 export default function PostCreate() {
     const API_BASE_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const memberId = localStorage.getItem("memberId");
-
+    const [categories, setCategory] = useState([]);
     const [form, setForm] = useState({
         title: "",
         content: "",
+        categoryParentId: "",
+        categoryChildId: ""
     });
 
     // 입력 값 변경
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            try {
+                const res = await axios.get(`${API_BASE_URL}/category`);
+                const data = res.data.result;
+                setCategory(data);
+            } catch (err) {
+                console.log("카테고리 전체 조회 실패", err)
+            }
+        }
+        fetchCategory();
+    }, [])
 
     // 글쓰기 제출
     const handleSubmit = async (e) => {
@@ -28,9 +44,12 @@ export default function PostCreate() {
         }
 
         try {
-            await axios.post(`${API_BASE_URL}/api/posts`, {
-                ...form,
-                memberId, // 글 작성자
+            await axios.post(`${API_BASE_URL}/posts`, {
+                title: form.title,
+                content: form.content,
+                categoryParentId: Number(form.categoryParentId),
+                categoryChildId: Number(form.categoryChildId),
+                memberId: memberId
             });
             alert("글 작성 완료!");
             navigate("/"); // 게시글 목록으로 이동
@@ -62,6 +81,41 @@ export default function PostCreate() {
                     className="w-full border rounded px-3 py-2 text-sm"
                     required
                 />
+                <div className="flex space-x-4">
+                    {/* 대분류 */}
+                    <select
+                        name="categoryParentId"
+                        value={form.categoryParentId}
+                        onChange={handleChange}
+                        className="border rounded px-3 py-2 text-sm w-1/2"
+                        required
+                    >
+                        <option value="">대분류 선택</option>
+                        {categories.map(cat => (
+                            <option key={cat.parentId} value={cat.parentId}>
+                                {cat.parentName}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/* 소분류 */}
+                    <select
+                        name="categoryChildId"
+                        value={form.categoryChildId}
+                        onChange={handleChange}
+                        className="border rounded px-3 py-2 text-sm w-1/2"
+                        required
+                    >
+                        <option value="">소분류 선택</option>
+                        {categories
+                            .find(cat => cat.parentId === Number(form.categoryParentId))
+                            ?.childNames.map(child => (
+                                <option key={child.id} value={child.id}>
+                                    {child.name}
+                                </option>
+                            ))}
+                    </select>
+                </div>
                 <button
                     type="submit"
                     className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 text-sm"

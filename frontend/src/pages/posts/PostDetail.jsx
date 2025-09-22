@@ -127,7 +127,7 @@ export default function PostDetail() {
             return;
         }
         try {
-            await axios.post(`http://localhost:8080/api/comments/${postId}`, {
+            await axios.post(`${API_BASE_URL}/comments/${postId}`, {
                 content,
                 memberId: loggedInMemberId,
                 parentId,
@@ -140,7 +140,7 @@ export default function PostDetail() {
 
     const handleCommentUpdate = async (commentId, content) => {
         try {
-            await axios.patch(`http://localhost:8080/api/comments/${commentId}`, {
+            await axios.patch(`${API_BASE_URL}/comments/${commentId}`, {
                 content,
                 memberId: loggedInMemberId,
             });
@@ -153,7 +153,7 @@ export default function PostDetail() {
     const handleCommentDelete = async (commentId) => {
         if (!window.confirm("정말 삭제하시겠습니까?")) return;
         try {
-            await axios.delete(`http://localhost:8080/api/comments/${commentId}`, {
+            await axios.delete(`${API_BASE_URL}/comments/${commentId}`, {
                 memberId: loggedInMemberId,
             });
             fetchComments();
@@ -202,7 +202,7 @@ export default function PostDetail() {
 
             <div className="mt-6">
                 <div className="flex justify-between items-center mb-2">
-                    <span className="text-md font-bold">댓글 {comments.length}개</span>
+                    <span className="text-md font-bold">댓글 {post.commentCount}개</span>
                 </div>
                 <CommentForm onSubmit={(content) => handleCommentCreate(content, null)} />
                 <CommentTree

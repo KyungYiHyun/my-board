@@ -11,7 +11,7 @@
     </insert>
 
     <select id="findById" parameterType="Long" resultType="GetPostResponse">
-        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.member_id,
+        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.member_id,p.comment_count,
         CASE WHEN p.created_at != p.modified_at THEN true
         ELSE false END AS isEdited
         FROM post p
@@ -89,9 +89,10 @@
                 from category_child cc
                 where cc.name = #{categoryChild})
             </if>
-        </where>
-        <where>
             <if test="keyword != null and keyword != ''">
+                <if test="categoryChild != null and categoryChild != ''">
+                    AND
+                </if>
                 MATCH(p.title, p.content) AGAINST(#{keyword} IN BOOLEAN MODE)
             </if>
         </where>

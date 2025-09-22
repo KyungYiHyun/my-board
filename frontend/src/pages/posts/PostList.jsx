@@ -114,7 +114,7 @@ export default function PostList({ highlightPostId, initialPage }) {
 
     const handleSearch = () => {
         setKeyword(keywordInput); // Enter나 버튼 클릭 시 실제 검색용 state 업데이트
-        setSearchParams({ page: 1, sort_index: sortIndex, order_type: orderType, keyword: keywordInput });
+        setSearchParams({ page: 1, sort_index: sortIndex, order_type: orderType, keyword: keywordInput, category_child: categoryChild, category_parent: categoryParent });
     };
 
     return (

@@ -16,5 +16,6 @@ public class GetAllPostResponse {
     private LocalDateTime createdAt;
     private int commentCount;
     private int likeCount;
+    private String categoryChildName;
 
 }

@@ -96,7 +96,7 @@ export default function PostList({ highlightPostId, initialPage }) {
     const handleSort = (column) => {
         if (sortIndex === column) setOrderType(orderType === "asc" ? "desc" : "asc");
         else setSortIndex(column);
-        setSearchParams({ page: 1, sort_index: column, order_type: orderType, keyword });
+        setSearchParams({ page: 1, sort_index: column, order_type: orderType, keyword, category_parent: categoryParent, category_child: categoryChild });
     };
 
     const handlePageClick = (pageNum) => {
@@ -142,6 +142,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                     <table className="w-full text-sm border-t">
                         <thead className="bg-gray-100 text-gray-600">
                             <tr>
+                                <th className="py-2 px-2 text-left w-3/5">카테고리</th>
                                 <th className="py-2 px-2 text-left w-3/5">제목</th>
                                 <th className="py-2 px-2 text-center w-1/5">작성자</th>
                                 <th
@@ -173,6 +174,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                                         key={post.postId}
                                         className={`border-b hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"} ${isHighlight ? "bg-yellow-50" : ""}`}
                                     >
+                                        <td>{post.categoryChildName}</td>
                                         <td className="py-2 px-2">
                                             <button
                                                 onClick={() => handlePostClick(post.postId)}

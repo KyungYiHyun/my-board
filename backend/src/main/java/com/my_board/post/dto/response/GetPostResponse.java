@@ -23,6 +23,7 @@ public class GetPostResponse {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private int commentCount;
+    private int likeCount;
     private Long memberId;
 
 }

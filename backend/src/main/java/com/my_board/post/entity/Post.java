@@ -22,6 +22,7 @@ public class Post extends BaseEntity {
     private int likeCount;
     private Long categoryChildId;
     private Long categoryParentId;
+    private boolean hot;
 
     @Builder
     public Post(Long id, String title, String content, int views, Long member_id,boolean isEdited,

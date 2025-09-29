@@ -22,6 +22,7 @@ export default function PostList({ highlightPostId, initialPage }) {
     const [keyword, setKeyword] = useState(""); // 실제 검색용
     const categoryParent = query.get("category_parent") || ""
     const categoryChild = query.get("category_child") || ""
+    const [hot, setHot] = useState(0);
 
 
 
@@ -69,7 +70,8 @@ export default function PostList({ highlightPostId, initialPage }) {
                             order_type: orderType,
                             keyword: keyword || undefined,
                             category_parent: categoryParent,
-                            category_child: categoryChild
+                            category_child: categoryChild,
+                            hot: hot
                         }
                     }
                 );
@@ -89,19 +91,25 @@ export default function PostList({ highlightPostId, initialPage }) {
             }
         };
         fetchPosts();
-    }, [page, sortIndex, orderType, keyword, categoryChild, categoryParent]);
+    }, [page, sortIndex, orderType, keyword, categoryChild, categoryParent, hot]);
 
 
 
     const handleSort = (column) => {
         if (sortIndex === column) setOrderType(orderType === "asc" ? "desc" : "asc");
         else setSortIndex(column);
-        setSearchParams({ page: 1, sort_index: column, order_type: orderType, keyword, category_parent: categoryParent, category_child: categoryChild });
+        setSearchParams({ page: 1, sort_index: column, order_type: orderType, keyword, category_parent: categoryParent, category_child: categoryChild, hot: hot });
     };
 
     const handlePageClick = (pageNum) => {
-        setSearchParams({ page: pageNum, sort_index: sortIndex, order_type: orderType, keyword, category_child: categoryChild, category_parent: categoryParent });
+        setSearchParams({ page: pageNum, sort_index: sortIndex, order_type: orderType, keyword, category_child: categoryChild, category_parent: categoryParent, hot: hot });
     };
+
+    const handleHotPosts = () => {
+        const newHot = hot === 1 ? 0 : 1
+        setHot(newHot);
+        setSearchParams({ page: 1, sort_index: sortIndex, order_type: orderType, keyword, category_child: categoryChild, category_parent: categoryParent, hot: newHot });
+    }
 
     const handlePostClick = (postId) => {
         if (!readPosts.includes(postId)) {
@@ -119,9 +127,17 @@ export default function PostList({ highlightPostId, initialPage }) {
 
     return (
         <div className="max-w-4xl mx-auto mt-6 px-4">
-            <h3 className="text-lg font-bold mb-4 border-b pb-2">{categoryChild ? categoryChild : "통합"} 게시판</h3>
-
-            {/* 검색 input */}
+            <div className="flex items-center  mb-4 border-b pb-2">
+                <h3 className="text-lg font-bold">
+                    {categoryChild ? categoryChild : "통합"} 게시판
+                </h3>
+                <button
+                    onClick={handleHotPosts}
+                    className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover hover:bg-red-600"
+                >
+                    🔥Hot글
+                </button>
+            </div>
             <div className="mb-4 flex space-x-2">
 
                 <input
@@ -180,9 +196,10 @@ export default function PostList({ highlightPostId, initialPage }) {
                                                 onClick={() => handlePostClick(post.postId)}
                                                 className={`font-medium ${isRead ? "text-gray-500" : "text-blue-600 hover:underline"}`}
                                             >
-                                                <HighlightText text={post.title} highlight={keyword} /> {post.commentCount > 0 && `[${post.commentCount}]`}
+                                                {post.hot ? <span>🔥</span> : <></>}<HighlightText text={post.title} highlight={keyword} /> {post.commentCount > 0 && `[${post.commentCount}]`}
                                             </button>
                                         </td>
+
                                         <td className="py-2 px-2 text-center">{post.nickname}</td>
                                         <td className="py-2 px-2 text-center">{post.views}</td>
                                         <td className="py-2 px-2 text-center">{post.likeCount || 0}</td>

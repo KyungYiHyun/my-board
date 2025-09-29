@@ -13,7 +13,6 @@ export default function CategoryMenu() {
                 const res = await axios.get(`${API_BASE_URL}/category`);
                 const data = res.data.result;
                 setCategory(data);
-                console.log(data);
             } catch (err) {
                 console.log("카테고리 전체 조회 실패", err)
             }

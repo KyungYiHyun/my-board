@@ -15,7 +15,6 @@ public class CategoryService {
 
     public List<GetCategoryParentResponse> getCategory() {
         List<GetCategoryParentResponse> categories = categoryMapper.getCategory();
-        System.out.println(categories);
         return categories;
     }
 }

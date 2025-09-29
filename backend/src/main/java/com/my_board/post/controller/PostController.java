@@ -45,8 +45,9 @@ public class PostController {
                                                                                   @RequestParam(name = "order_type", required = false) String orderType,
                                                                                   @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
                                                                                   @RequestParam(name = "category_parent", required = false) String categoryParent,
-                                                                                  @RequestParam(name = "category_child", required = false) String categoryChild) {
-        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page, sortIndex, orderType, keyword,categoryParent,categoryChild)));
+                                                                                  @RequestParam(name = "category_child", required = false) String categoryChild,
+                                                                                  @RequestParam(name = "hot", required = false) Integer hot) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page, sortIndex, orderType, keyword, categoryParent, categoryChild, hot)));
     }
 
    /* @GetMapping("/search")

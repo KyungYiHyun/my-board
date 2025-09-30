@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { format } from "date-fns";
-import { ca } from "date-fns/locale";
+import { ca, hi } from "date-fns/locale";
 
 
 
@@ -23,14 +23,22 @@ export default function PostList({ highlightPostId, initialPage }) {
     const categoryParent = query.get("category_parent") || ""
     const categoryChild = query.get("category_child") || ""
     const [hot, setHot] = useState(0);
+    const [history, setHistory] = useState(() => {
+        const saved = localStorage.getItem("searchHistory");
+        return saved ? JSON.parse(saved) : [];
+    })
+
+    const [showHistory, setShowHistory] = useState(false);
+    const [isMouseInHistory, setIsMouseInHistory] = useState(false);
 
 
 
 
     const navigate = useNavigate();
     const page = Number(searchParams.get("page")) || initialPage || 1;
+    const visibleHistory = history.slice(0, 10);
 
-
+    console.log(visibleHistory);
     // 검색어 하이라이팅 컴포넌트
     function HighlightText({ text, highlight }) {
         if (!highlight) return <>{text}</>;
@@ -122,7 +130,17 @@ export default function PostList({ highlightPostId, initialPage }) {
 
     const handleSearch = () => {
         setKeyword(keywordInput); // Enter나 버튼 클릭 시 실제 검색용 state 업데이트
+        const filtered = history.filter((item) => item !== keywordInput);
+        const newHistory = [keywordInput, ...filtered];
+        setHistory(newHistory);
+        localStorage.setItem("searchHistory", JSON.stringify(newHistory));
         setSearchParams({ page: 1, sort_index: sortIndex, order_type: orderType, keyword: keywordInput, category_child: categoryChild, category_parent: categoryParent });
+    };
+
+    const handleDelete = (item) => {
+        const newHistory = history.filter((h) => h !== item);
+        setHistory(newHistory);
+        localStorage.setItem("searchHistory", JSON.stringify(newHistory));
     };
 
     return (
@@ -138,19 +156,85 @@ export default function PostList({ highlightPostId, initialPage }) {
                     🔥Hot글
                 </button>
             </div>
-            <div className="mb-4 flex space-x-2">
+            <div style={{ width: "400px", margin: "50px auto", position: "relative" }}>
+                <div style={{ display: "flex" }}>
+                    <input
+                        type="text"
+                        value={keywordInput}
+                        placeholder="검색어를 입력하세요"
+                        onChange={(e) => setKeywordInput(e.target.value)}
+                        onFocus={() => setShowHistory(true)}
+                        onBlur={() => {
+                            // 마우스가 히스토리 영역에 없을 때만 닫기
+                            if (!isMouseInHistory) {
+                                setTimeout(() => setShowHistory(false), 10);
+                            }
+                        }}
+                        className="border px-2 py-1 flex-1"
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                    />
+                    <button onClick={handleSearch} type="button" className="px-4 py-1 bg-blue-500 text-white rounded">
+                        검색
+                    </button>
+                </div>
+                {showHistory && visibleHistory.length > 0 && (
+                    <ul
+                        onMouseEnter={() => setIsMouseInHistory(true)} // 마우스가 들어오면
+                        onMouseLeave={() => setIsMouseInHistory(false)} // 마우스가 나가면
+                        style={{
+                            position: "absolute",
+                            top: "42px",
+                            left: 0,
+                            right: 0,
+                            border: "1px solid #ccc",
+                            background: "white",
+                            listStyle: "none",
+                            margin: 0,
+                            padding: "5px 0",
+                            borderRadius: "0 0 4px 4px",
+                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                            zIndex: 100,
+                        }}
+                    >
+                        {visibleHistory.map((item, idx) => (
+                            <li
+                                key={idx}
+                                style={{
+                                    padding: "8px 12px",
+                                    cursor: "pointer",
+                                    fontSize: "15px",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}
+                                onClick={() => {
+                                    setKeywordInput(item);
+                                    setShowHistory(false); // 검색어 선택 후 닫기
+                                }}
+                            >
+                                <span>{item}</span>
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(item);
+                                        // 삭제 후에도 창 유지 (아무 것도 안 함)
+                                    }}
+                                    style={{
+                                        border: "none",
+                                        background: "transparent",
+                                        cursor: "pointer",
+                                        color: "#888",
+                                        fontSize: "14px",
+                                    }}
+                                >
+                                    ✕
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
 
-                <input
-                    type="text"
-                    value={keywordInput}
-                    placeholder="검색어를 입력하세요"
-                    onChange={(e) => setKeywordInput(e.target.value)} // 입력용 state만 업데이트
-                    className="border px-2 py-1 flex-1"
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                />
-                <button onClick={handleSearch} className="px-4 py-1 bg-blue-500 text-white rounded">
-                    검색
-                </button>
             </div>
 
             {posts.length > 0 ? (

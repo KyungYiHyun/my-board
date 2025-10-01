@@ -2,8 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { format } from "date-fns";
-import { ca, hi } from "date-fns/locale";
+import { format, formatDistanceToNow } from "date-fns";
+import { ko } from "date-fns/locale";
 
 
 
@@ -173,7 +173,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                         className="border px-2 py-1 flex-1"
                         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                     />
-                    <button onClick={handleSearch} type="button" className="px-4 py-1 bg-blue-500 text-white rounded">
+                    <button onClick={handleSearch} type="button" className="px-4 py-1 bg-blue-500 text-white rounded ml-2">
                         검색
                     </button>
                 </div>
@@ -258,7 +258,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                                     추천 {sortIndex === "likeCount" ? (orderType === "asc" ? "▲" : "▼") : ""}
                                 </th>
                                 <th
-                                    className="py-2 px-2 text-center w-1/5 cursor-pointer"
+                                    className="py-2 px-2 text-center w-1/5 cursor-pointer whitespace-nowrap"
                                     onClick={() => handleSort("created_at")}
                                 >
                                     작성일 {sortIndex === "created_at" ? (orderType === "asc" ? "▲" : "▼") : ""}
@@ -287,7 +287,21 @@ export default function PostList({ highlightPostId, initialPage }) {
                                         <td className="py-2 px-2 text-center">{post.nickname}</td>
                                         <td className="py-2 px-2 text-center">{post.views}</td>
                                         <td className="py-2 px-2 text-center">{post.likeCount || 0}</td>
-                                        <td className="py-2 px-2 text-center">{format(new Date(post.createdAt), "yyyy.MM.dd")}</td>
+                                        <td className="py-2 px-2 text-center">
+                                            {(() => {
+                                                const createdAt = new Date(post.createdAt);
+                                                const diff = Date.now() - createdAt.getTime();
+                                                const oneDay = 24 * 60 * 60 * 1000;
+
+                                                if (diff < oneDay) {
+                                                    // 하루 이내면 "몇 분 전 / 몇 시간 전"
+                                                    return formatDistanceToNow(createdAt, { addSuffix: true, locale: ko });
+                                                } else {
+                                                    // 하루 이상이면 yyyy.MM.dd
+                                                    return format(createdAt, "yyyy.MM.dd");
+                                                }
+                                            })()}
+                                        </td>
                                     </tr>
                                 );
                             })}

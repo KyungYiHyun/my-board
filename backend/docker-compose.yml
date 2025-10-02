@@ -8,7 +8,6 @@ services:
       - "8080:8080"
     restart: always
     environment:
-      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: ${DB_URL}
       SPRING_DATASOURCE_USERNAME: ${DB_USER_NAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_USER_PWD}
@@ -29,12 +28,24 @@ services:
       MYSQL_PASSWORD: ${DB_USER_PWD}
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./mysql-config/my.cnf:/etc/mysql/my.cnf
 
   react-app:
     image: ${REACT_IMAGE}
     container_name: react-app
     ports:
       - "80:80"
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ../nginx/conf/:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    depends_on:
+      - react-app
+      - spring-boot-app
 
 volumes:
   mysql-data:

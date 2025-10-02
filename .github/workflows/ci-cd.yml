@@ -69,4 +69,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_IMAGE }}
             docker pull ${{ secrets.REACT_IMAGE }}
             cd /home/ubuntu/docker-compose
-            docker-compose up 
+            docker-compose up -d

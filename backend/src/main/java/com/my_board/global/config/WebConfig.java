@@ -14,6 +14,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("http://devboard.kr")
                         .allowedMethods("GET", "POST", "PUT", "DELETE","PATCH")
                         .allowCredentials(true);
             }

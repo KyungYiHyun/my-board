@@ -30,7 +30,7 @@ public class PostService {
 
     private final PostMapper postMapper;
 
-    private final static String MEDIA_BASE_URL = "/app/uploads";
+    private final static String MEDIA_BASE_URL = "/app/uploads/";
 
     public CreateAndUpdatePostResponse createPost(CreateAndUpdatePostRequest request) {
         Post post = Post.toEntity(request);

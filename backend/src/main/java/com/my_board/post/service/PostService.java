@@ -108,7 +108,7 @@ public class PostService {
             Path path = Paths.get(MEDIA_BASE_URL + savedName);
 
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            String fileUrl = "https://devboard.kr/app/uploads/" + savedName;
+            String fileUrl = "https://devboard.kr/media/" + savedName;
             return new UploadMediaFileResponse(fileUrl);
         } catch (IOException e) {
             throw new BusinessException(FAIL_MEDIA_UPLOAD);

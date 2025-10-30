@@ -77,7 +77,7 @@ public class PostController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<BaseResponse<UploadMediaFileResponse>> uploadMediaFile(@ModelAttribute("media") MultipartFile mediaFile) {
+    public ResponseEntity<BaseResponse<UploadMediaFileResponse>> uploadMediaFile(@RequestParam("media") MultipartFile mediaFile) {
 
         return ResponseEntity.ok(new BaseResponse<>(postService.uploadMediaFile(mediaFile)));
 

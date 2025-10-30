@@ -2,16 +2,22 @@ package com.my_board.post.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.my_board.common.dto.BaseResponse;
+import com.my_board.common.exception.BusinessException;
 import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
 import com.my_board.post.dto.response.CreateAndUpdatePostResponse;
 import com.my_board.post.dto.response.GetAllPostResponse;
 import com.my_board.post.dto.response.GetPostResponse;
+import com.my_board.post.dto.response.UploadMediaFileResponse;
 import com.my_board.post.service.PostService;
 import com.my_board.post.service.ViewCookieService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,6 +74,13 @@ public class PostController {
     public ResponseEntity<BaseResponse<CreateAndUpdatePostResponse>> updatePost(@PathVariable Long postId,
                                                                                 @RequestBody CreateAndUpdatePostRequest request) {
         return ResponseEntity.ok(new BaseResponse<>(postService.updatePost(postId, request)));
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<BaseResponse<UploadMediaFileResponse>> uploadMediaFile(@ModelAttribute("media") MultipartFile mediaFile) {
+
+        return ResponseEntity.ok(new BaseResponse<>(postService.uploadMediaFile(mediaFile)));
+
     }
 
 

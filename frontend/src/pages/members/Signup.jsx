@@ -21,7 +21,7 @@ export default function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${API_BASE_URL}/api/member/signup`, form);
+            await axios.post(`${API_BASE_URL}/member/signup`, form);
             alert("회원가입 성공!");
             navigate("/login");
         } catch (err) {

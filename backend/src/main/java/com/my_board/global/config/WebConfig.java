@@ -15,8 +15,11 @@ public class WebConfig {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
                         .allowedOrigins("http://devboard.kr")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE","PATCH")
-                        .allowCredentials(true);
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+                        .allowCredentials(true)
+                        .allowedHeaders("*");
+
+
             }
         };
     }

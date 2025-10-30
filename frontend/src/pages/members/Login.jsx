@@ -18,7 +18,9 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${API_BASE_URL}/member/login`, form);
+            const res = await axios.post(`${API_BASE_URL}/member/login`, form, {
+                withCredentials: true
+            });
             // 로그인 성공 시 토큰/아이디 저장
             localStorage.setItem("memberId", res.data.result.memberId);
             alert("로그인 성공!");

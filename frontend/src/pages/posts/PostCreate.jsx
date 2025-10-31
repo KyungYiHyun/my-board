@@ -36,8 +36,8 @@ export default function PostCreate() {
             const res = await axios.post(`${API_BASE_URL}/uploads`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            // Expecting { url: string } from server
-            return res?.data?.url;
+            // Expecting { result: { url: string } } from server
+            return res?.data?.result?.url;
         } catch (e) {
             console.error("파일 업로드 실패", e);
             alert("파일 업로드에 실패했습니다.");

@@ -29,10 +29,10 @@ export default function PostCreate() {
         editor.setSelection((range ? range.index : 0) + 1);
     };
 
-    const uploadFile = async (file) => {
+    const uploadFile = async (media) => {
         try {
             const formData = new FormData();
-            formData.append("file", file);
+            formData.append("media", media);
             const res = await axios.post(`${API_BASE_URL}/uploads`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });

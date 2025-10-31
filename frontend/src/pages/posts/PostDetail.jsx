@@ -179,8 +179,11 @@ export default function PostDetail() {
                 </div>
             </div>
 
-            <div className="min-h-[200px] text-gray-800 text-base leading-relaxed whitespace-pre-line">
-                <HighlightText text={post.content} highlight={keyword} />
+            <div className="min-h-[200px] text-gray-800 text-base leading-relaxed">
+                <div
+                    className="prose max-w-none"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                />
             </div>
 
             <div className="mt-4 flex items-center space-x-4">

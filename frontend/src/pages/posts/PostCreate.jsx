@@ -33,7 +33,7 @@ export default function PostCreate() {
         try {
             const formData = new FormData();
             formData.append("media", media);
-            const res = await axios.post(`${API_BASE_URL}/uploads`, formData, {
+            const res = await axios.post(`${API_BASE_URL}/postsuploads`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             // Expecting { result: { url: string } } from server

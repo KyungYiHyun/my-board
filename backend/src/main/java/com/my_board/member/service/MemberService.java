@@ -1,6 +1,7 @@
 package com.my_board.member.service;
 
 import com.my_board.common.exception.BusinessException;
+import com.my_board.member.dto.CheckedLoggedInResponse;
 import com.my_board.member.dto.request.MemberLoginRequest;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberLoginResponse;
@@ -51,5 +52,23 @@ public class MemberService {
 
 
         return MemberLoginResponse.from(member.getId());
+    }
+
+    public CheckedLoggedInResponse checkLoggedIn(HttpSession session) {
+        Long memberId = (Long) session.getAttribute("memberId");
+
+        if (memberId == null) {
+           return new CheckedLoggedInResponse(false);
+        }
+
+        return new CheckedLoggedInResponse(true);
+
+    }
+
+    public void logout(HttpSession session) {
+        if (session != null) {
+            session.invalidate();
+        }
+        log.info("로그 아웃 완료");
     }
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import apiClient from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
@@ -21,7 +21,7 @@ export default function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${API_BASE_URL}/member/signup`, form);
+            await apiClient.post(`${API_BASE_URL}/member/signup`, form);
             alert("회원가입 성공!");
             navigate("/login");
         } catch (err) {

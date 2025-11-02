@@ -1,5 +1,6 @@
 package com.my_board.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.my_board.common.dto.BaseResponseStatus;
 import com.my_board.common.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.Map;
 
 @Component
 public class LoginCheckInterceptor implements HandlerInterceptor {
@@ -22,19 +25,26 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            return true;
+        }
+
+
         if (session == null || session.getAttribute("memberId") == null) {
+
+
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> res = Map.of(
+                    "isSuccess", false,
+                    "code", 411,
+                    "message", "로그인이 필요합니다."
+            );
 
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=UTF-8");
             response.setStatus(401); // UNAUTHORIZED
+            response.getWriter().write(mapper.writeValueAsString(res));
 
-            String json = "{"
-                    + "\"isSuccess\": false,"
-                    + "\"code\": 411,"
-                    + "\"message\": \"로그인이 필요합니다.\""
-                    + "}";
-
-            response.getWriter().write(json);
             return false;
         }
 

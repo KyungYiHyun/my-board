@@ -1,6 +1,7 @@
 package com.my_board.member.controller;
 
 import com.my_board.common.dto.BaseResponse;
+import com.my_board.member.dto.CheckedLoggedInResponse;
 import com.my_board.member.dto.request.MemberLoginRequest;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberLoginResponse;
@@ -9,10 +10,7 @@ import com.my_board.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,4 +29,14 @@ public class MemberController {
         return ResponseEntity.ok(new BaseResponse<>(memberService.login(request, session)));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<BaseResponse<CheckedLoggedInResponse>> checkLoggedIn(HttpSession session) {
+        return ResponseEntity.ok(new BaseResponse<CheckedLoggedInResponse>(memberService.checkLoggedIn(session)));
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<BaseResponse<Void>> logout(HttpSession session) {
+        memberService.logout(session);
+        return ResponseEntity.ok(new BaseResponse<>());
+    }
 }

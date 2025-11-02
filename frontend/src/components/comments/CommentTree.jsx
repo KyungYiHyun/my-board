@@ -1,6 +1,6 @@
 import CommentItem from "./CommentItem";
 
-export default function CommentTree({ comments, depth = 0, loggedInMemberId, onDelete, onUpdate, onReply }) {
+export default function CommentTree({ comments, depth = 0, currentMemberId, onDelete, onUpdate, onReply }) {
     return (
         <>
             {comments.map((comment) => (
@@ -8,7 +8,7 @@ export default function CommentTree({ comments, depth = 0, loggedInMemberId, onD
                     <CommentItem
                         comment={comment}
                         depth={depth}
-                        loggedInMemberId={loggedInMemberId}
+                        currentMemberId={currentMemberId}
                         onDelete={onDelete}
                         onUpdate={onUpdate}
                         onReply={onReply}
@@ -17,7 +17,7 @@ export default function CommentTree({ comments, depth = 0, loggedInMemberId, onD
                         <CommentTree
                             comments={comment.children}
                             depth={depth + 1}
-                            loggedInMemberId={loggedInMemberId}
+                            currentMemberId={currentMemberId}
                             onDelete={onDelete}
                             onUpdate={onUpdate}
                             onReply={onReply}

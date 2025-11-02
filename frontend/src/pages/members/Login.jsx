@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import apiClient from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -18,11 +18,8 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${API_BASE_URL}/member/login`, form, {
-                withCredentials: true
-            });
-            // 로그인 성공 시 토큰/아이디 저장
-            localStorage.setItem("memberId", res.data.result.memberId);
+            await apiClient.post(`${API_BASE_URL}/member/login`, form);
+            // 로그인 성공 시 JSESSIONID 쿠키가 자동으로 설정됨
             alert("로그인 성공!");
             navigate("/");
         } catch (err) {

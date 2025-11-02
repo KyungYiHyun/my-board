@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./CategoryMenu.css";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../utils/axios";
 export default function CategoryMenu() {
     const API_BASE_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function CategoryMenu() {
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/category`);
+                const res = await apiClient.get(`${API_BASE_URL}/category`);
                 const data = res.data.result;
                 setCategory(data);
             } catch (err) {

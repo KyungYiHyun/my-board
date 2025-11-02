@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../utils/axios";
 import { format } from "date-fns";
 import CommentTree from "../../components/comments/CommentTree";
 import CommentForm from "../../components/comments/CommentForm";
 import PostList from "./PostList";
+import { isAuthenticated } from "../../utils/auth";
 
 export default function PostDetail() {
     const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -12,11 +13,10 @@ export default function PostDetail() {
     const { postId } = useParams();
     const [searchParams] = useSearchParams();
     const currentPage = Number(searchParams.get("page")) || 1; // 현재 페이지 받기
-
-    const loggedInMemberId = localStorage.getItem("memberId");
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentMemberId, setCurrentMemberId] = useState(null);
 
     const [likeCount, setLikeCount] = useState(0);
     const [dislikeCount, setDislikeCount] = useState(0);
@@ -50,7 +50,7 @@ export default function PostDetail() {
     // 현재 글의 추천/비추천 카운트 조회
     const fetchLikes = async () => {
         try {
-            const res = await axios.get(`${API_BASE_URL}/posts/like/${postId}/${loggedInMemberId}`);
+            const res = await apiClient.get(`${API_BASE_URL}/posts/like/${postId}`);
             setLikeCount(res.data.result.likeCount);
             setDislikeCount(res.data.result.dislikeCount);
             setUserReaction(res.data.result.type);
@@ -60,15 +60,14 @@ export default function PostDetail() {
     };
 
     const handleReaction = async (type) => {
-        if (!loggedInMemberId) {
+        if (!isAuthenticated()) {
             alert("로그인 후 이용 가능합니다.");
             return;
         }
 
         try {
             // 이미 같은 버튼 눌렀으면 토글 취소
-            await axios.post(`${API_BASE_URL}/posts/like`, {
-                memberId: loggedInMemberId,
+            await apiClient.post(`${API_BASE_URL}/posts/like`, {
                 postId,
                 type,
             });
@@ -89,7 +88,7 @@ export default function PostDetail() {
 
     const fetchPost = async () => {
         try {
-            const res = await axios.get(`${API_BASE_URL}/posts/${postId}`, { withCredentials: true });
+            const res = await apiClient.get(`${API_BASE_URL}/posts/${postId}`);
             setPost(res.data.result);
         } catch (err) {
             console.error("게시글 조회 실패", err);
@@ -98,7 +97,11 @@ export default function PostDetail() {
 
     const fetchComments = async () => {
         try {
-            const res = await axios.get(`${API_BASE_URL}/comments/${postId}`);
+            const res = await apiClient.get(`${API_BASE_URL}/comments/${postId}`);
+            // 서버 응답에서 현재 사용자의 memberId를 받아옴 (있는 경우)
+            if (res.data.currentMemberId) {
+                setCurrentMemberId(String(res.data.currentMemberId));
+            }
             setComments(buildCommentTree(res.data.result));
         } catch (err) {
             console.error("댓글 조회 실패", err);
@@ -122,14 +125,13 @@ export default function PostDetail() {
     };
 
     const handleCommentCreate = async (content, parentId = null) => {
-        if (!loggedInMemberId) {
+        if (!isAuthenticated()) {
             alert("로그인 후 댓글을 작성할 수 있습니다.");
             return;
         }
         try {
-            await axios.post(`${API_BASE_URL}/comments/${postId}`, {
+            await apiClient.post(`${API_BASE_URL}/comments/${postId}`, {
                 content,
-                memberId: loggedInMemberId,
                 parentId,
             });
             fetchComments();
@@ -140,9 +142,8 @@ export default function PostDetail() {
 
     const handleCommentUpdate = async (commentId, content) => {
         try {
-            await axios.patch(`${API_BASE_URL}/comments/${commentId}`, {
+            await apiClient.patch(`${API_BASE_URL}/comments/${commentId}`, {
                 content,
-                memberId: loggedInMemberId,
             });
             fetchComments();
         } catch (err) {
@@ -153,9 +154,7 @@ export default function PostDetail() {
     const handleCommentDelete = async (commentId) => {
         if (!window.confirm("정말 삭제하시겠습니까?")) return;
         try {
-            await axios.delete(`${API_BASE_URL}/comments/${commentId}`, {
-                memberId: loggedInMemberId,
-            });
+            await apiClient.delete(`${API_BASE_URL}/comments/${commentId}`);
             fetchComments();
         } catch (err) {
             console.error("댓글 삭제 실패", err);
@@ -210,7 +209,7 @@ export default function PostDetail() {
                 <CommentForm onSubmit={(content) => handleCommentCreate(content, null)} />
                 <CommentTree
                     comments={comments}
-                    loggedInMemberId={loggedInMemberId}
+                    currentMemberId={currentMemberId}
                     onDelete={handleCommentDelete}
                     onUpdate={handleCommentUpdate}
                     onReply={handleCommentCreate}

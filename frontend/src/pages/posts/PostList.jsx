@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "../../utils/axios";
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -69,7 +69,7 @@ export default function PostList({ highlightPostId, initialPage }) {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await axios.get(
+                const res = await apiClient.get(
                     `${API_BASE_URL}/posts`,
                     {
                         params: {

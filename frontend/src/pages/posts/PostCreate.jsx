@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import apiClient from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
+import { isAuthenticated } from "../../utils/auth";
 
 export default function PostCreate() {
     const API_BASE_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
-    const memberId = localStorage.getItem("memberId");
     const [categories, setCategory] = useState([]);
     const quillRef = useRef(null);
     const [form, setForm] = useState({
@@ -33,7 +33,7 @@ export default function PostCreate() {
         try {
             const formData = new FormData();
             formData.append("media", media);
-            const res = await axios.post(`${API_BASE_URL}/posts/upload`, formData);
+            const res = await apiClient.post(`${API_BASE_URL}/posts/upload`, formData);
             // Expecting { result: { url: string } } from server
             return res?.data?.result?.url;
         } catch (e) {
@@ -97,7 +97,7 @@ export default function PostCreate() {
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/category`);
+                const res = await apiClient.get(`${API_BASE_URL}/category`);
                 const data = res.data.result;
                 setCategory(data);
             } catch (err) {
@@ -111,7 +111,7 @@ export default function PostCreate() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!memberId) {
+        if (!isAuthenticated()) {
             alert("로그인 후 글을 작성할 수 있습니다.");
             navigate("/login");
             return;
@@ -119,12 +119,11 @@ export default function PostCreate() {
 
         try {
             const editorHtml = quillRef.current?.getEditor()?.root?.innerHTML ?? form.content;
-            await axios.post(`${API_BASE_URL}/posts`, {
+            await apiClient.post(`${API_BASE_URL}/posts`, {
                 title: form.title,
                 content: editorHtml,
                 categoryParentId: Number(form.categoryParentId),
                 categoryChildId: Number(form.categoryChildId),
-                memberId: memberId
             });
             alert("글 작성 완료!");
             navigate("/"); // 게시글 목록으로 이동

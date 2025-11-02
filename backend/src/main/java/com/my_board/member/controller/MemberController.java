@@ -6,6 +6,7 @@ import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberLoginResponse;
 import com.my_board.member.dto.response.MemberSignUpResponse;
 import com.my_board.member.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +27,8 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<MemberLoginResponse>> login(@RequestBody MemberLoginRequest request) {
-        return ResponseEntity.ok(new BaseResponse<>(memberService.login(request)));
+    public ResponseEntity<BaseResponse<MemberLoginResponse>> login(@RequestBody MemberLoginRequest request, HttpSession session) {
+        return ResponseEntity.ok(new BaseResponse<>(memberService.login(request, session)));
     }
 
 }

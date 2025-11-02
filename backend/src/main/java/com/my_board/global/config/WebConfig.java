@@ -3,10 +3,18 @@ package com.my_board.global.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig {
+public class WebConfig implements WebMvcConfigurer {
+
+    private final LoginCheckInterceptor loginCheckInterceptor;
+
+    public WebConfig(LoginCheckInterceptor loginCheckInterceptor) {
+        this.loginCheckInterceptor = loginCheckInterceptor;
+    }
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -24,4 +32,11 @@ public class WebConfig {
         };
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginCheckInterceptor)
+                .addPathPatterns("/api/posts/**",
+                        "/api/comments/**");
+
+    }
 }

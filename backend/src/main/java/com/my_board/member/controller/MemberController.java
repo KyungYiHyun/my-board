@@ -1,7 +1,7 @@
 package com.my_board.member.controller;
 
 import com.my_board.common.dto.BaseResponse;
-import com.my_board.member.dto.CheckedLoggedInResponse;
+import com.my_board.member.dto.response.CheckedLoggedInResponse;
 import com.my_board.member.dto.request.MemberLoginRequest;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberLoginResponse;
@@ -39,4 +39,6 @@ public class MemberController {
         memberService.logout(session);
         return ResponseEntity.ok(new BaseResponse<>());
     }
+
+
 }

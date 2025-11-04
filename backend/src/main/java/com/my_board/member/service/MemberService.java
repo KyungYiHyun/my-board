@@ -1,7 +1,7 @@
 package com.my_board.member.service;
 
 import com.my_board.common.exception.BusinessException;
-import com.my_board.member.dto.CheckedLoggedInResponse;
+import com.my_board.member.dto.response.CheckedLoggedInResponse;
 import com.my_board.member.dto.request.MemberLoginRequest;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberLoginResponse;

@@ -1,4 +1,4 @@
-package com.my_board.member.dto;
+package com.my_board.member.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

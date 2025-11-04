@@ -32,7 +32,6 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         if (session == null || session.getAttribute("memberId") == null) {
 
-
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> res = Map.of(
                     "isSuccess", false,

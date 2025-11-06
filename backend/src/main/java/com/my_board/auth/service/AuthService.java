@@ -49,6 +49,8 @@ public class AuthService {
         String email = request.getEmail();
         String code = request.getCode();
         Verification v = store.get(email);
+        log.info("email: {}", email);
+        log.info("code: {}", code);
         if (v == null || v.expiration().isBefore(LocalDateTime.now())) {
             store.remove(email);
             throw new BusinessException(INCORRECT_EMAIL_CODE);
@@ -63,6 +65,6 @@ public class AuthService {
     }
 
     private String generateCode() {
-        return String.format("%06d", new Random().nextInt());
+        return String.format("%06d", new Random().nextInt(1000000));
     }
 }

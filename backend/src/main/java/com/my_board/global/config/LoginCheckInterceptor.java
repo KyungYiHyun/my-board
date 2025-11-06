@@ -35,7 +35,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> res = Map.of(
                     "isSuccess", false,
-                    "code", 411,
+                    "code", 401,
                     "message", "로그인이 필요합니다."
             );
 

@@ -34,7 +34,7 @@ public class MemberController {
         return ResponseEntity.ok(new BaseResponse<CheckedLoggedInResponse>(memberService.checkLoggedIn(session)));
     }
 
-    @PostMapping("logout")
+    @PostMapping("/logout")
     public ResponseEntity<BaseResponse<Void>> logout(HttpSession session) {
         memberService.logout(session);
         return ResponseEntity.ok(new BaseResponse<>());

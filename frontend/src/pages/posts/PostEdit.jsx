@@ -1,44 +1,51 @@
-import axios from "axios";
+import apiClient from "../../utils/axios";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { checkAuthStatus } from "../../utils/auth";
 
 export default function PostEdit() {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
+
     const { postId } = useParams();
     const navigate = useNavigate();
-    const loggedInMemberId = localStorage.getItem("memberId");
 
     const [form, setForm] = useState({
         title: "",
         content: "",
-        memberId: loggedInMemberId || "",
     });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // 기존 글 내용 불러오기
-        axios
-            .get(`http://localhost:8080/api/posts/${postId}`)
-            .then((res) => {
-                const post = res.data.result;
+        const checkAuthAndLoadPost = async () => {
+            const isAuth = await checkAuthStatus(API_BASE_URL);
+            if (!isAuth) {
+                alert("로그인 후 글을 수정할 수 있습니다.");
+                navigate("/login");
+                return;
+            }
 
-                if (loggedInMemberId !== String(post.memberId)) {
-                    alert("수정 권한이 없습니다.");
-                    navigate("/");
-                    return;
-                }
+            // 기존 글 내용 불러오기
+            try {
+                const res = await apiClient.get(`${API_BASE_URL}/posts/${postId}`);
+                const post = res.data.result;
 
                 setForm({
                     title: post.title,
                     content: post.content,
-                    memberId: post.memberId,
                 });
                 setLoading(false);
-            })
-            .catch((err) => {
+            } catch (err) {
                 console.error("게시글 조회 실패", err);
+                if (err.response?.status === 401 || err.response?.status === 403) {
+                    alert("수정 권한이 없습니다.");
+                    navigate("/");
+                }
                 setLoading(false);
-            });
-    }, [postId, loggedInMemberId, navigate]);
+            }
+        };
+
+        checkAuthAndLoadPost();
+    }, [postId, navigate, API_BASE_URL]);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -48,16 +55,20 @@ export default function PostEdit() {
         e.preventDefault();
         try {
             // PATCH 요청
-            await axios.patch(`http://localhost:8080/api/posts/${postId}`, {
+            await apiClient.patch(`${API_BASE_URL}/posts/${postId}`, {
                 title: form.title,
                 content: form.content,
-                memberId: form.memberId,
             });
             alert("글 수정 완료!");
             navigate(`/posts/${postId}`);
         } catch (err) {
             console.error("글 수정 실패", err);
-            alert("글 수정 실패");
+            if (err.response?.status === 401 || err.response?.status === 403) {
+                alert("수정 권한이 없습니다.");
+                navigate("/");
+            } else {
+                alert("글 수정 실패");
+            }
         }
     };
 

@@ -1,12 +1,14 @@
 package com.my_board.member.service;
 
 import com.my_board.common.exception.BusinessException;
+import com.my_board.member.dto.response.CheckedLoggedInResponse;
 import com.my_board.member.dto.request.MemberLoginRequest;
 import com.my_board.member.dto.request.MemberSignupRequest;
 import com.my_board.member.dto.response.MemberLoginResponse;
 import com.my_board.member.dto.response.MemberSignUpResponse;
 import com.my_board.member.entity.Member;
 import com.my_board.member.mapper.MemberMapper;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,11 +41,34 @@ public class MemberService {
         return MemberSignUpResponse.of(member.getId());
     }
 
-    public MemberLoginResponse login(MemberLoginRequest request) {
+    public MemberLoginResponse login(MemberLoginRequest request, HttpSession session) {
         Member member = findByLoginId(request);
+
         if (!member.isPasswordMatch(request.getPassword())) {
             throw new BusinessException(INCORRECT_PASSWORD);
         }
+
+        session.setAttribute("memberId",member.getId());
+
+
         return MemberLoginResponse.from(member.getId());
+    }
+
+    public CheckedLoggedInResponse checkLoggedIn(HttpSession session) {
+        Long memberId = (Long) session.getAttribute("memberId");
+
+        if (memberId == null) {
+           return new CheckedLoggedInResponse(false);
+        }
+
+        return new CheckedLoggedInResponse(true);
+
+    }
+
+    public void logout(HttpSession session) {
+        if (session != null) {
+            session.invalidate();
+        }
+        log.info("로그 아웃 완료");
     }
 }

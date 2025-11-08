@@ -6,13 +6,14 @@
 <mapper namespace="com.my_board.post.mapper.PostMapper">
     <insert id="createPost" parameterType="Post"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO post(title, content, member_id)
-        VALUES (#{title}, #{content}, #{member_id})
+        INSERT INTO post(title, content, member_id, category_child_id, category_parent_id)
+        VALUES (#{title}, #{content}, #{member_id}, #{categoryChildId}, #{categoryParentId})
     </insert>
 
     <select id="findById" parameterType="Long" resultType="GetPostResponse">
-        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at, p.member_id,
-        CASE WHEN p.created_at != p.modified_at THEN true
+        SELECT p.id AS postId, m.nickname, p.title, p.content, p.views, p.created_at, p.modified_at,
+        p.member_id,p.comment_count,
+        p.like_count, CASE WHEN p.created_at != p.modified_at THEN true
         ELSE false END AS isEdited
         FROM post p
         JOIN member m
@@ -79,19 +80,27 @@
 
     <select id="getAllPosts" resultType="GetAllPostResponse">
         SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at, p.comment_count as commentCount,
-        p.like_count AS likeCount
+        p.like_count AS likeCount, p.hot, cc.name AS categoryChildName
         from post p
         join member m on m.id = p.member_id
+        join category_child cc on p.category_child_id = cc.id
         <where>
             <if test="categoryChild != '' and categoryChild != null">
                 p.category_child_id = (select id
                 from category_child cc
                 where cc.name = #{categoryChild})
             </if>
-        </where>
-        <where>
             <if test="keyword != null and keyword != ''">
+                <if test="categoryChild != null and categoryChild != ''">
+                    AND
+                </if>
                 MATCH(p.title, p.content) AGAINST(#{keyword} IN BOOLEAN MODE)
+            </if>
+            <if test="hot == 1">
+                <if test="(keyword != null and keyword != '') or (categoryChild != null and categoryChild != '')">
+                    AND
+                </if>
+                p.hot is true
             </if>
         </where>
         order by ${sortIndex} ${orderType}

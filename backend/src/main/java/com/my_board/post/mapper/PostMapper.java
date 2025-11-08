@@ -18,7 +18,7 @@ public interface PostMapper {
     Optional<GetPostResponse> findById(@Param("postId") Long id);
 
     List<GetAllPostResponse> getAllPosts(@Param("sortIndex") String sortIndex, @Param("orderType") String orderType, @Param("keyword") String keyword,
-                                         @Param("categoryParent")String categoryParent, @Param("categoryChild")String categoryChild );
+                                         @Param("categoryParent")String categoryParent, @Param("categoryChild")String categoryChild,@Param("hot") Integer hot );
 
     int deletePost(Long postId);
 

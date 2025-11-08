@@ -1,26 +1,58 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import CategoryMenu from "./CategoryMenu";
+import { checkAuthStatus } from "../utils/auth";
+import apiClient from "../utils/axios";
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const memberId = localStorage.getItem("memberId"); // 로그인 상태 판단
+    const location = useLocation();
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
+    const [authenticated, setAuthenticated] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.removeItem("memberId"); // 로그아웃 처리
-        alert("로그아웃 되었습니다.");
-        navigate("/login");
+    // 인증 상태 확인
+    useEffect(() => {
+        const verifyAuth = async () => {
+            const isLoggedIn = await checkAuthStatus(API_BASE_URL);
+            setAuthenticated(isLoggedIn);
+        };
+        verifyAuth();
+    }, [location, API_BASE_URL]); // 페이지 이동 시마다 확인
+
+    const handleLogout = async () => {
+        try {
+            // 서버에 로그아웃 요청
+            await apiClient.post(`${API_BASE_URL}/member/logout`);
+        } catch (err) {
+            console.error("로그아웃 요청 실패", err);
+        } finally {
+            // localStorage에 저장된 memberId가 있다면 제거
+            if (localStorage.getItem("memberId")) {
+                localStorage.removeItem("memberId");
+            }
+            // 즉시 인증 상태를 false로 설정
+            setAuthenticated(false);
+
+            // 서버에서 인증 상태를 다시 확인 (비동기로 확인하여 나중에 업데이트)
+            checkAuthStatus(API_BASE_URL).then(isLoggedIn => {
+                setAuthenticated(isLoggedIn);
+            });
+
+            alert("로그아웃 되었습니다.");
+            navigate("/login");
+        }
     };
 
     return (
         <nav className="bg-white shadow p-4 flex justify-between items-center">
             <div className="navbar-left">
                 <button className="logo-button" onClick={() => window.location.href = "/"}>
-                    My Board
+                    Dev Board
                 </button>
                 <CategoryMenu />
             </div>
             <div className="flex gap-3">
-                {memberId ? (
+                {authenticated ? (
                     <>
                         <button
                             onClick={() => navigate("/create")}

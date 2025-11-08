@@ -2,16 +2,22 @@ package com.my_board.post.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.my_board.common.dto.BaseResponse;
+import com.my_board.common.exception.BusinessException;
 import com.my_board.post.dto.request.CreateAndUpdatePostRequest;
 import com.my_board.post.dto.response.CreateAndUpdatePostResponse;
 import com.my_board.post.dto.response.GetAllPostResponse;
 import com.my_board.post.dto.response.GetPostResponse;
+import com.my_board.post.dto.response.UploadMediaFileResponse;
 import com.my_board.post.service.PostService;
 import com.my_board.post.service.ViewCookieService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,17 +51,18 @@ public class PostController {
                                                                                   @RequestParam(name = "order_type", required = false) String orderType,
                                                                                   @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
                                                                                   @RequestParam(name = "category_parent", required = false) String categoryParent,
-                                                                                  @RequestParam(name = "category_child", required = false) String categoryChild) {
-        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page, sortIndex, orderType, keyword,categoryParent,categoryChild)));
+                                                                                  @RequestParam(name = "category_child", required = false) String categoryChild,
+                                                                                  @RequestParam(name = "hot", required = false) Integer hot) {
+        return ResponseEntity.ok(new BaseResponse<>(postService.getAllPosts(page, sortIndex, orderType, keyword, categoryParent, categoryChild, hot)));
     }
 
-    @GetMapping("/search")
+   /* @GetMapping("/search")
     public ResponseEntity<BaseResponse<PageInfo<GetAllPostResponse>>> getAllPostsByLike(@RequestParam(name = "page", required = false) int page,
                                                                                         @RequestParam(name = "sort_index", required = false) String sortIndex,
                                                                                         @RequestParam(name = "order_type", required = false) String orderType,
                                                                                         @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {
         return ResponseEntity.ok(new BaseResponse<>(postService.getAllPostsByLike(page, sortIndex, orderType, keyword)));
-    }
+    }*/
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable Long postId) {
@@ -67,6 +74,13 @@ public class PostController {
     public ResponseEntity<BaseResponse<CreateAndUpdatePostResponse>> updatePost(@PathVariable Long postId,
                                                                                 @RequestBody CreateAndUpdatePostRequest request) {
         return ResponseEntity.ok(new BaseResponse<>(postService.updatePost(postId, request)));
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<BaseResponse<UploadMediaFileResponse>> uploadMediaFile(@RequestParam("media") MultipartFile mediaFile) {
+
+        return ResponseEntity.ok(new BaseResponse<>(postService.uploadMediaFile(mediaFile)));
+
     }
 
 

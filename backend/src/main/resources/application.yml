@@ -1,13 +1,21 @@
-server:
-  port: ${PORT}
-
 spring:
+  application:
+    name: my-board
   datasource:
-    url: jdbc:mysql://${DB_URL}/${DB_NAME}
-    username: ${DB_USER_NAME}
-    password: ${DB_USER_PWD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+  profiles:
+    active: local
+  mail:
+    host: ${GMAIL_HOST}
+    port: ${GMAIL_PORT}
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_PASSWORD}
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
 pagehelper:
   helper-dialect: mysql
   reasonable: true

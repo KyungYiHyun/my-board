@@ -22,6 +22,8 @@ public class GetPostResponse {
     private boolean isEdited;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private int commentCount;
+    private int likeCount;
     private Long memberId;
 
 }

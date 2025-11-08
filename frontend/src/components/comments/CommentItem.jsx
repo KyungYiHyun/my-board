@@ -2,8 +2,9 @@ import { useState } from "react";
 import { format } from "date-fns";
 import CommentForm from "../../components/comments/CommentForm";
 
-export default function CommentItem({ comment, loggedInMemberId, onDelete, onUpdate, onReply, depth = 0 }) {
-    const isAuthor = loggedInMemberId === String(comment.memberId);
+export default function CommentItem({ comment, currentMemberId, onDelete, onUpdate, onReply, depth = 0 }) {
+    // 서버에서 댓글 응답에 isAuthor 플래그가 포함되어 있으면 우선 사용, 없으면 currentMemberId로 판단
+    const isAuthor = comment.isAuthor !== undefined ? comment.isAuthor : (currentMemberId && currentMemberId === String(comment.memberId));
     const [editing, setEditing] = useState(false);
     const [replying, setReplying] = useState(false);
     const [content, setContent] = useState(comment.content);

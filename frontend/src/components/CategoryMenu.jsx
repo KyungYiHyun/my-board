@@ -2,17 +2,17 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./CategoryMenu.css";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../utils/axios";
 export default function CategoryMenu() {
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const [categories, setCategory] = useState([]);
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/api/category`);
+                const res = await apiClient.get(`${API_BASE_URL}/category`);
                 const data = res.data.result;
                 setCategory(data);
-                console.log(data);
             } catch (err) {
                 console.log("카테고리 전체 조회 실패", err)
             }
@@ -21,7 +21,7 @@ export default function CategoryMenu() {
     }, [])
     return (
         <div className="category-container">
-            {categories.map((cat) => (
+            {categories.length > 0 ? categories.map((cat) => (
                 <div className="category-item" key={cat.parentName}>
                     <button className="category-button">
                         {cat.parentName}
@@ -30,14 +30,14 @@ export default function CategoryMenu() {
                         {cat.childNames.map((child) => (
                             <button
                                 key={child.id}
-                                onClick={() => navigate(`/posts?category=${child.id}`)}
+                                onClick={() => window.location.href = `/posts?category_parent=${cat.parentName}&category_child=${child.name}`}
                             >
                                 {child.name}
                             </button>
                         ))}
                     </div>
                 </div>
-            ))}
+            )) : "카테고리 로드 실패"}
         </div>
     );
 }

@@ -9,5 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 public class GetCategoryParentResponse {
     private String parentName;
+    private Long parentId;
     private List<GetCategoryChildResponse> childNames;
 }

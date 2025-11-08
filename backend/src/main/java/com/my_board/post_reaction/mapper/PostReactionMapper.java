@@ -15,4 +15,6 @@ public interface PostReactionMapper {
 
     PostReaction findReaction(@Param("memberId") Long memberId, @Param("postId") Long postId);
 
+    void updateHotPost(@Param("postId") Long postId);
+
 }

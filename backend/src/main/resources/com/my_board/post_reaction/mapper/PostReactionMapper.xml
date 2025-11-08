@@ -32,5 +32,12 @@
         AND type = #{type}
     </select>
 
+    <update id="updateHotPost">
+        UPDATE post
+        SET hot = true
+        WHERE id = #{postId}
+    </update>
+
+
 
 </mapper>

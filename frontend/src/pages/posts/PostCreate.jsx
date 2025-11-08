@@ -111,6 +111,8 @@ export default function PostCreate() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+
+        const memberId = localStorage.getItem("memberId");
         const isAuth = await checkAuthStatus(API_BASE_URL);
         if (!isAuth) {
             alert("로그인 후 글을 작성할 수 있습니다.");
@@ -125,6 +127,7 @@ export default function PostCreate() {
                 content: editorHtml,
                 categoryParentId: Number(form.categoryParentId),
                 categoryChildId: Number(form.categoryChildId),
+                memberId: Number(memberId),
             });
             alert("글 작성 완료!");
             navigate("/"); // 게시글 목록으로 이동

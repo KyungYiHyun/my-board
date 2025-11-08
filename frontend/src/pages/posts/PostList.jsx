@@ -38,7 +38,7 @@ export default function PostList({ highlightPostId, initialPage }) {
     const page = Number(searchParams.get("page")) || initialPage || 1;
     const visibleHistory = history.slice(0, 10);
 
-    console.log(visibleHistory);
+
     // 검색어 하이라이팅 컴포넌트
     function HighlightText({ text, highlight }) {
         if (!highlight) return <>{text}</>;
@@ -242,11 +242,11 @@ export default function PostList({ highlightPostId, initialPage }) {
                     <table className="w-full text-sm border-t">
                         <thead className="bg-gray-100 text-gray-600">
                             <tr>
-                                <th className="py-2 px-2 text-left w-3/5">카테고리</th>
+                                <th className="py-2 px-2 text-left w-1/5">카테고리</th>
                                 <th className="py-2 px-2 text-left w-3/5">제목</th>
-                                <th className="py-2 px-2 text-center w-1/5">작성자</th>
+                                <th className="py-2 px-2 text-center w-1/4 whitespace-nowrap">작성자</th>
                                 <th
-                                    className="py-2 px-2 text-center w-2/5 whitespace-nowrap cursor-pointer"
+                                    className="py-2 px-2 text-center w-1/5 whitespace-nowrap cursor-pointer"
                                     onClick={() => handleSort("views")}
                                 >
                                     조회수 {sortIndex === "views" ? (orderType === "asc" ? "▲" : "▼") : ""}
@@ -258,7 +258,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                                     추천 {sortIndex === "likeCount" ? (orderType === "asc" ? "▲" : "▼") : ""}
                                 </th>
                                 <th
-                                    className="py-2 px-2 text-center w-1/5 cursor-pointer whitespace-nowrap"
+                                    className="py-2 px-2 text-center w-2/5 cursor-pointer whitespace-nowrap"
                                     onClick={() => handleSort("created_at")}
                                 >
                                     작성일 {sortIndex === "created_at" ? (orderType === "asc" ? "▲" : "▼") : ""}
@@ -274,7 +274,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                                         key={post.postId}
                                         className={`border-b hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"} ${isHighlight ? "bg-yellow-50" : ""}`}
                                     >
-                                        <td>{post.categoryChildName}</td>
+                                        <td className="px-2">{post.categoryChildName}</td>
                                         <td className="py-2 px-2">
                                             <button
                                                 onClick={() => handlePostClick(post.postId)}

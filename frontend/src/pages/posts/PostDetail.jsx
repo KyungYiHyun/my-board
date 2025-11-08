@@ -17,7 +17,7 @@ export default function PostDetail() {
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentMemberId, setCurrentMemberId] = useState(null);
+
 
     const [likeCount, setLikeCount] = useState(0);
     const [dislikeCount, setDislikeCount] = useState(0);
@@ -25,7 +25,7 @@ export default function PostDetail() {
 
     const keyword = searchParams.get("keyword") || ""; // 검색어 가져오기
 
-
+    const memberId = localStorage.getItem("memberId");
 
     // 검색어 하이라이팅 컴포넌트
     function HighlightText({ text, highlight }) {
@@ -51,7 +51,7 @@ export default function PostDetail() {
     // 현재 글의 추천/비추천 카운트 조회
     const fetchLikes = async () => {
         try {
-            const res = await apiClient.get(`${API_BASE_URL}/posts/like/${postId}`);
+            const res = await apiClient.get(`${API_BASE_URL}/posts/like/${postId}/${memberId}`);
             setLikeCount(res.data.result.likeCount);
             setDislikeCount(res.data.result.dislikeCount);
             setUserReaction(res.data.result.type);
@@ -70,6 +70,7 @@ export default function PostDetail() {
         try {
             // 이미 같은 버튼 눌렀으면 토글 취소
             await apiClient.post(`${API_BASE_URL}/posts/like`, {
+                memberId: Number(memberId),
                 postId,
                 type,
             });
@@ -101,9 +102,7 @@ export default function PostDetail() {
         try {
             const res = await apiClient.get(`${API_BASE_URL}/comments/${postId}`);
             // 서버 응답에서 현재 사용자의 memberId를 받아옴 (있는 경우)
-            if (res.data.currentMemberId) {
-                setCurrentMemberId(String(res.data.currentMemberId));
-            }
+
             setComments(buildCommentTree(res.data.result));
         } catch (err) {
             console.error("댓글 조회 실패", err);
@@ -133,7 +132,9 @@ export default function PostDetail() {
             return;
         }
         try {
+
             await apiClient.post(`${API_BASE_URL}/comments/${postId}`, {
+                memberId: Number(memberId),
                 content,
                 parentId,
             });
@@ -212,7 +213,7 @@ export default function PostDetail() {
                 <CommentForm onSubmit={(content) => handleCommentCreate(content, null)} />
                 <CommentTree
                     comments={comments}
-                    currentMemberId={currentMemberId}
+                    currentMemberId={memberId}
                     onDelete={handleCommentDelete}
                     onUpdate={handleCommentUpdate}
                     onReply={handleCommentCreate}

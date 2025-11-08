@@ -18,8 +18,12 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await apiClient.post(`${API_BASE_URL}/member/login`, form);
-            // 로그인 성공 시 JSESSIONID 쿠키가 자동으로 설정됨
+            const response = await apiClient.post(`${API_BASE_URL}/member/login`, form);
+            // 로그인 성공 시 JSESSIONID 쿠키가 자동으로 설정됨        
+            const memberId = response.data.result.memberId;
+            if (memberId) {
+                localStorage.setItem("memberId", memberId);
+            }
             alert("로그인 성공!");
             navigate("/");
         } catch (err) {

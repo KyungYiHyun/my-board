@@ -3,7 +3,7 @@ import apiClient from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { isAuthenticated } from "../../utils/auth";
+import { checkAuthStatus } from "../../utils/auth";
 
 export default function PostCreate() {
     const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -111,7 +111,8 @@ export default function PostCreate() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!isAuthenticated()) {
+        const isAuth = await checkAuthStatus(API_BASE_URL);
+        if (!isAuth) {
             alert("로그인 후 글을 작성할 수 있습니다.");
             navigate("/login");
             return;

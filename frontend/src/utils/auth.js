@@ -21,11 +21,11 @@ export const checkAuthStatus = async (apiBaseUrl) => {
  * @returns {boolean} JSESSIONID 쿠키가 존재하면 true
  * @deprecated HttpOnly 쿠키는 JavaScript로 읽을 수 없으므로 checkAuthStatus를 사용하세요
  */
-export const isAuthenticated = () => {
-    // document.cookie에서 JSESSIONID 찾기
-    const cookies = document.cookie.split(';');
-    return cookies.some(cookie => cookie.trim().startsWith('JSESSIONID='));
-};
+// export const isAuthenticated = () => {
+//     // document.cookie에서 JSESSIONID 찾기
+//     const cookies = document.cookie.split(';');
+//     return cookies.some(cookie => cookie.trim().startsWith('JSESSIONID='));
+// };
 
 /**
  * 쿠키에서 특정 값을 가져오기

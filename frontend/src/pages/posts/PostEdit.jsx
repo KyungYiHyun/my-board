@@ -1,7 +1,7 @@
 import apiClient from "../../utils/axios";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { isAuthenticated } from "../../utils/auth";
+import { checkAuthStatus } from "../../utils/auth";
 
 export default function PostEdit() {
     const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -16,16 +16,17 @@ export default function PostEdit() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!isAuthenticated()) {
-            alert("로그인 후 글을 수정할 수 있습니다.");
-            navigate("/login");
-            return;
-        }
+        const checkAuthAndLoadPost = async () => {
+            const isAuth = await checkAuthStatus(API_BASE_URL);
+            if (!isAuth) {
+                alert("로그인 후 글을 수정할 수 있습니다.");
+                navigate("/login");
+                return;
+            }
 
-        // 기존 글 내용 불러오기
-        apiClient
-            .get(`${API_BASE_URL}/posts/${postId}`)
-            .then((res) => {
+            // 기존 글 내용 불러오기
+            try {
+                const res = await apiClient.get(`${API_BASE_URL}/posts/${postId}`);
                 const post = res.data.result;
 
                 setForm({
@@ -33,16 +34,18 @@ export default function PostEdit() {
                     content: post.content,
                 });
                 setLoading(false);
-            })
-            .catch((err) => {
+            } catch (err) {
                 console.error("게시글 조회 실패", err);
                 if (err.response?.status === 401 || err.response?.status === 403) {
                     alert("수정 권한이 없습니다.");
                     navigate("/");
                 }
                 setLoading(false);
-            });
-    }, [postId, navigate]);
+            }
+        };
+
+        checkAuthAndLoadPost();
+    }, [postId, navigate, API_BASE_URL]);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });

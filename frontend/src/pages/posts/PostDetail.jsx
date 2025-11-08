@@ -5,7 +5,8 @@ import { format } from "date-fns";
 import CommentTree from "../../components/comments/CommentTree";
 import CommentForm from "../../components/comments/CommentForm";
 import PostList from "./PostList";
-import { isAuthenticated } from "../../utils/auth";
+import { checkAuthStatus } from "../../utils/auth";
+
 
 export default function PostDetail() {
     const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -60,7 +61,8 @@ export default function PostDetail() {
     };
 
     const handleReaction = async (type) => {
-        if (!isAuthenticated()) {
+        const isAuth = await checkAuthStatus(API_BASE_URL);
+        if (!isAuth) {
             alert("로그인 후 이용 가능합니다.");
             return;
         }
@@ -125,7 +127,8 @@ export default function PostDetail() {
     };
 
     const handleCommentCreate = async (content, parentId = null) => {
-        if (!isAuthenticated()) {
+        const isAuth = await checkAuthStatus(API_BASE_URL);
+        if (!isAuth) {
             alert("로그인 후 댓글을 작성할 수 있습니다.");
             return;
         }

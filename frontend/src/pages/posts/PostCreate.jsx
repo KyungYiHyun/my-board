@@ -59,6 +59,12 @@ export default function PostCreate() {
     const imageHandler = async () => {
         const file = await selectLocalFile("image/*");
         if (!file) return;
+        const maxSize = 5 * 1024 * 1024; // 5MB 제한
+        if (file.size > maxSize) {
+            alert("이미지 파일은 5MB 이하만 업로드 가능합니다.");
+            return;
+        }
+
         const url = await uploadFile(file);
         if (url) handleInsertToEditor("image", url);
     };

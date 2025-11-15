@@ -1,5 +1,6 @@
 package com.my_board.category.controller;
 
+import com.my_board.category.dto.response.GetBlogUrlResponse;
 import com.my_board.category.dto.response.GetCategoryParentResponse;
 import com.my_board.category.service.CategoryService;
 import com.my_board.common.dto.BaseResponse;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -21,6 +23,11 @@ public class CategoryController {
     @GetMapping("")
     public ResponseEntity<BaseResponse<List<GetCategoryParentResponse>>> getCategory() {
         return ResponseEntity.ok(new BaseResponse<>(categoryService.getCategory()));
+    }
+
+    @GetMapping("/blog")
+    public ResponseEntity<BaseResponse<GetBlogUrlResponse>> getBlogUrl(@RequestParam("category_child") String categoryChildName) {
+        return ResponseEntity.ok(new BaseResponse<>(categoryService.getBlogUrl(categoryChildName)));
     }
 
 

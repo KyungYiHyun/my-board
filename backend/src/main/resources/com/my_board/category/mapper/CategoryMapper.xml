@@ -25,4 +25,10 @@
         order by cp.sort_order, cc.sort_order
     </select>
 
+    <select id="getBlogUrl" resultType="GetBlogUrlResponse">
+        select blog_url
+        from category_child cc
+        where cc.name = #{name}
+    </select>
+
 </mapper>

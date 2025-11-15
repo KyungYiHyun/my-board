@@ -30,8 +30,7 @@ export default function PostList({ highlightPostId, initialPage }) {
 
     const [showHistory, setShowHistory] = useState(false);
     const [isMouseInHistory, setIsMouseInHistory] = useState(false);
-
-
+    const [blogUrl, setBlogUrl] = useState("");
 
 
     const navigate = useNavigate();
@@ -63,10 +62,22 @@ export default function PostList({ highlightPostId, initialPage }) {
     useEffect(() => {
         const stored = JSON.parse(localStorage.getItem("readPosts") || "[]");
         setReadPosts(stored);
+
     }, []);
 
     // 게시글 fetch
     useEffect(() => {
+        const getBlogUrl = async () => {
+            const res = await apiClient.get(`${API_BASE_URL}/category/blog`, {
+                params: {
+                    category_child: categoryChild
+                }
+            });
+            if (res.data.result) {
+                setBlogUrl(res.data.result.blogUrl);
+            }
+        }
+
         const fetchPosts = async () => {
             try {
                 const res = await apiClient.get(
@@ -99,6 +110,7 @@ export default function PostList({ highlightPostId, initialPage }) {
             }
         };
         fetchPosts();
+        getBlogUrl();
     }, [page, sortIndex, orderType, keyword, categoryChild, categoryParent, hot]);
 
 
@@ -237,6 +249,7 @@ export default function PostList({ highlightPostId, initialPage }) {
 
             </div>
 
+
             {posts.length > 0 ? (
                 <>
                     <table className="w-full text-sm border-t">
@@ -266,6 +279,22 @@ export default function PostList({ highlightPostId, initialPage }) {
                             </tr>
                         </thead>
                         <tbody>
+                            {/* 공식 블로그 행 */}
+                            {blogUrl && (
+                                <tr className="border-b bg-purple-50">
+                                    <td className="px-2 font-medium text-purple-700">블로그</td>
+                                    <td className="py-2 px-2" colSpan={5}>
+                                        <a
+                                            href={blogUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 hover:underline"
+                                        >
+                                            공식 블로그 바로가기
+                                        </a>
+                                    </td>
+                                </tr>
+                            )}
                             {posts.map((post, idx) => {
                                 const isRead = readPosts.includes(post.postId);
                                 const isHighlight = highlightPostId === post.postId;

@@ -279,19 +279,20 @@ export default function PostList({ highlightPostId, initialPage }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {/* 공식 블로그 행 */}
                             {blogUrl && (
-                                <tr className="border-b bg-purple-50">
-                                    <td className="px-2 font-medium text-purple-700">블로그</td>
-                                    <td className="py-2 px-2" colSpan={5}>
-                                        <a
-                                            href={blogUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:underline"
-                                        >
-                                            공식 블로그 바로가기
-                                        </a>
+                                <tr className="border-b">
+                                    <td colSpan={6} className="py-3 px-4">
+                                        <div className="bg-purple-50 border border-purple-200 p-3 rounded-lg flex items-center gap-2">
+                                            <span className="text-purple-600 text-lg">🔗</span>
+                                            <a
+                                                href={blogUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-purple-700 font-semibold no-underline hover:underline"
+                                            >
+                                                {categoryChild} 공식 블로그 및 최신 업데이트 보기
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             )}

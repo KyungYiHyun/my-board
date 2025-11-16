@@ -80,7 +80,7 @@
 
     <select id="getAllPosts" resultType="GetAllPostResponse">
         SELECT p.id AS postId, p.title, m.nickname, p.views, p.created_at, p.comment_count as commentCount,
-        p.like_count AS likeCount, p.hot, cc.name AS categoryChildName
+        p.like_count AS likeCount, p.hot, p.include_media_file AS includeMediaFile ,cc.name AS categoryChildName
         from post p
         join member m on m.id = p.member_id
         join category_child cc on p.category_child_id = cc.id

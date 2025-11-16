@@ -18,5 +18,7 @@ public class GetAllPostResponse {
     private int likeCount;
     private String categoryChildName;
     private boolean hot;
+    private boolean includeMediaFile;
+
 
 }

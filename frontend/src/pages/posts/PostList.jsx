@@ -310,7 +310,7 @@ export default function PostList({ highlightPostId, initialPage }) {
                                                 onClick={() => handlePostClick(post.postId)}
                                                 className={`font-medium ${isRead ? "text-gray-500" : "text-blue-600 hover:underline"}`}
                                             >
-                                                {post.hot ? <span>🔥</span> : <></>}<HighlightText text={post.title} highlight={keyword} /> {post.commentCount > 0 && `[${post.commentCount}]`}
+                                                {post.hot ? <span>🔥</span> : <></>}{post.includeMediaFile ? <span>🖼️</span> : <></>}<HighlightText text={post.title} highlight={keyword} /> {post.commentCount > 0 && `[${post.commentCount}]`}
                                             </button>
                                         </td>
 
